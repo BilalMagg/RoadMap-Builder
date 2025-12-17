@@ -1,5 +1,6 @@
 import { DataSource } from "typeorm";
 import { IDatabaseConfig } from "./database.interface";
+import { UserEntity } from "../models/user.entity";
 export const AppDataSource = new DataSource({
     type:"postgres",
     host:"localhost",
@@ -9,7 +10,7 @@ export const AppDataSource = new DataSource({
     database:"roadmap",
     synchronize:true,
     logging:true,
-    entities:[],
+    entities:[UserEntity],
     subscribers:[],
     migrations:[]
 })
