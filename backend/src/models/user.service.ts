@@ -17,11 +17,11 @@ export class UserService {
           }
           const existingEmail = await this.userRepo.findByEmail(email);
           if(existingEmail){
-            throw new Error('email is already exist choose another !!!')
+            throw new Error('email is already exist')
           }
           const existingUsername =  await this.userRepo.findByUsername(username);
           if(existingUsername){
-             throw new Error('username is already exist choose another !!!')
+             throw new Error('username is already exist')
           }
           const HashPassword = await hashPassword(password);
           const newUser = await this.userRepo.save({
@@ -41,7 +41,9 @@ export class UserService {
         const isMatch = await MatchingPassword(password,user.password);
         if (!isMatch) throw new Error('Invalid credentials');
 
-        
+        if(!loginDto.rememberMe){
+          
+        }
         const accessToken = this.generateToken(user, '15m', process.env.JWT_ACCESS_SECRET!);
         const refreshToken = this.generateToken(user, '7d', process.env.JWT_REFRESH_SECRET!);
 

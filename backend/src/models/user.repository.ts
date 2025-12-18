@@ -1,14 +1,15 @@
 import { Repository } from "typeorm";
-import { AppDataSource } from "../config/postgres.config"; // Ton DataSource TypeORM
+// import { appDataSource } from "../config/postgres/postgres.config"; // Ton DataSource TypeORM
 import { UserEntity } from "./user.entity";
 import { IUserRepository } from "../interface/user/user.interface";
 import { UserRequestDto } from "./user.dto";
+import { AppDataSource } from "../config/dbConfig";
 
 export class UserRepository implements IUserRepository {
   private repository: Repository<UserEntity>;
 
   constructor() {
-    this.repository = AppDataSource.getRepository(UserEntity);
+    this.repository = AppDataSource.getDataSource().getRepository(UserEntity);
   }
 
   async save(userData: UserRequestDto): Promise<UserEntity> {

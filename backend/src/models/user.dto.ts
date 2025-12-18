@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength, IsOptional, IsUrl } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, IsOptional,IsBoolean, IsUrl } from 'class-validator';
 import { UserEntity } from './user.entity';
 
 export class UserRequestDto {
@@ -34,11 +34,17 @@ export class UserResponseDto {
   }
 }
 
-export class LoginRequestDto{
-    @IsEmail()
-    @IsNotEmpty()
-    email!:string;
-    @IsString()
-    @MinLength(8, { message: "Le mot de passe est trop court" })
-    password!:string;
+export class LoginRequestDto {
+  @IsEmail()
+  @IsNotEmpty()
+  email!: string;
+
+  @IsString()
+  @MinLength(8, { message: "Le mot de passe est trop court" })
+  password!: string;
+
+
+  @IsOptional()
+  @IsBoolean({ message: "La valeur doit être un booléen" })
+  rememberMe?: boolean = false; 
 }
