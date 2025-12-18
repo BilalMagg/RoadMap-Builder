@@ -1,5 +1,6 @@
-import { IUserRepository } from "../interface/user/user.interface";
-import { hashPassword, MatchingPassword } from "../utils/HashPassword";
+import bcrypt from "bcryptjs";
+import { IUserRepository } from "./interface/user.interface";
+import { hashPassword, MatchingPassword } from "../../utils/HashPassword";
 import { LoginRequestDto, UserRequestDto, UserResponseDto } from "./user.dto";
 import jwt from 'jsonwebtoken';
 import { UserEntity } from './user.entity';

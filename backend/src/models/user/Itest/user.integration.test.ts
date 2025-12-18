@@ -1,6 +1,6 @@
 import request from 'supertest';
-import app from '../app';
-import { AppDataSource } from '../config/dbConfig';
+import app from '../../../app';
+import { AppDataSource } from '../../../config/dbConfig';
 
 
 describe('Auth Integration Tests', () => {

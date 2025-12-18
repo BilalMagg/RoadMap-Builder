@@ -1,9 +1,9 @@
-import { UserService } from './user.service';
-import { IUserRepository } from '../interface/user/user.interface';
-import { LoginRequestDto, UserRequestDto, UserResponseDto } from './user.dto';
+import { UserService } from '../user.service';
+import { IUserRepository } from '../interface/user.interface';
+import { LoginRequestDto, UserRequestDto, UserResponseDto } from '../user.dto';
 
-import * as HashUtils from '../utils/HashPassword';
-import { UserController } from './user.controller';
+import * as HashUtils from '../../../utils/HashPassword';
+import { UserController } from '../user.controller';
 import { Request, Response } from 'express';
 describe('UserService Unit Tests', () => {
     let userService: UserService;
