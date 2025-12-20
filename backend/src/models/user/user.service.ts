@@ -1,9 +1,7 @@
-import bcrypt from "bcryptjs";
+
 import { IUserRepository } from "./interface/user.interface";
 import { hashPassword, MatchingPassword } from "../../utils/HashPassword";
-import { LoginRequestDto, UserRequestDto, UserResponseDto } from "./user.dto";
-import jwt from 'jsonwebtoken';
-import { UserEntity } from './user.entity';
+import { LoginRequestDto, UserProfilResponse, UserRequestDto, UserResponseDto } from "./user.dto";
 import { RefreshTokenService } from "../refreshToken/refreshToken.service";
 
 export class UserService {
@@ -14,9 +12,7 @@ export class UserService {
     
    async signUp (userdata:UserRequestDto):Promise<UserResponseDto> {
           const { email, password, username } = userdata;
-          if(!email || !password || !username){
-            throw new Error('missing value')
-          }
+          
           const existingEmail = await this.userRepo.findByEmail(email);
           if(existingEmail){
             throw new Error('email is already exist')
@@ -63,6 +59,17 @@ export class UserService {
                   accessToken, 
                   refreshToken 
               };
+    }
+    async getProfil(id:string) {
+           const user = await this.userRepo.findById(id);
+
+           if(!user){
+            throw new Error("User not found")
+           }
+
+           return{
+            user:UserProfilResponse.fromEntity(user)
+           }
     }
 
 

@@ -10,15 +10,8 @@ export class UserController {
     async signUp(req: Request, res: Response): Promise<Response> {
         try {
            
-            const signUpDto: UserRequestDto = req.body;
 
-            if (!signUpDto || Object.keys(signUpDto).length === 0) {
-                return res.status(400).json({ 
-                    message: "Invalid request: Missing user data" 
-                });
-            }
-
-            const user = await this.userService.signUp(signUpDto);
+            const user = await this.userService.signUp(req.body);
 
             return res.status(201).json({
                 message: "User created successfully",
@@ -38,13 +31,9 @@ export class UserController {
     async login(req: Request, res: Response) {
         try {
             
-            const userData :LoginRequestDto = plainToInstance(LoginRequestDto,req.body);
-            await validateOrReject(userData, { 
-            whitelist: true,              
-            forbidNonWhitelisted: true    
-            });
+        
 
-            const { user, accessToken, refreshToken } = await this.userService.login(userData);
+            const { user, accessToken, refreshToken } = await this.userService.login(req.body);
             
             res.cookie('accessToken', accessToken, {
                 httpOnly: true,
@@ -66,6 +55,21 @@ export class UserController {
             return res.status(401).json({ message: err.message });
         }
     }
+
+      async getProfil(req: Request, res: Response){
+
+         const id = req.userId;
+         const profil = await this.userService.getProfil(id as string);
+          res.status(200).json({
+             message: "User Profil",
+             profil
+          })
+        try{
+
+        }catch(err: any) {
+            return res.status(401).json({ message: err.message });
+        }
+      }
 
   /*   async refreshToken(req: Request, res: Response) {
     try {

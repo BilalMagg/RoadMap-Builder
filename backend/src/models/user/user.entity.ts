@@ -41,7 +41,7 @@ export class UserEntity {
   @Column({ type: "varchar", length: 100, unique: true })
   @IsEmail({}, { message: "Invalid email format" })
   @IsNotEmpty({ message: "Email is required" })
-  email!: string;
+  email!: string; 
 
   @Column({ type: "varchar", length: 255 })
   password!: string;
