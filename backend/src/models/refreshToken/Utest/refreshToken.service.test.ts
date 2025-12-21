@@ -11,7 +11,8 @@ describe('RefreshTokenService Unit Tests', () => {
         mockRepo = {
             create: jest.fn(),
             findByHash: jest.fn(),
-            save: jest.fn()
+            save: jest.fn(),
+            revokeAllByUserId: jest.fn()
         } as any;
         service = new RefreshTokenService(mockRepo);
         process.env.JWT_ACCESS_SECRET = 'access_secret';
@@ -67,11 +68,17 @@ describe('RefreshTokenService Unit Tests', () => {
         });
 
         it('should throw error if token is revoked (reuse detection)', async () => {
-            const oldToken = jwt.sign({ id: mockUser.id }, 'refresh_secret');
-            mockRepo.findByHash.mockResolvedValue({ isRevoked: true } as any);
+    const oldToken = jwt.sign({ id: mockUser.id }, 'refresh_secret');
 
-            await expect(service.rotateRefreshToken(oldToken))
-                .rejects.toThrow('Utilisation de token frauduleux détectée. Session fermée.');
-        });
+    mockRepo.findByHash.mockResolvedValue({
+        isRevoked: true
+    } as any);
+
+    await expect(service.rotateRefreshToken(oldToken))
+        .rejects.toThrow('Utilisation de token frauduleux détectée. Session fermée.');
+
+    expect(mockRepo.revokeAllByUserId).toHaveBeenCalledWith(mockUser.id);
+});
+
     });
 });
