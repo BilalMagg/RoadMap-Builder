@@ -2,10 +2,11 @@ import { IDatabaseConfig } from "./database.interface";
 import { DatabaseFactory } from "./database.factory";
 
 
-const env = process.env.NODE_ENV || "dev" ;
+const env = process.env.NODE_ENV || "test" ;
 const DEV = process.env.ENV_DEV;
 const TEST = process.env.ENV_TEST;
 const PROD = process.env.ENV_PROD;
+console.log("Env choice : ",env);
 
 
 const linkDataSource = () : IDatabaseConfig => {
