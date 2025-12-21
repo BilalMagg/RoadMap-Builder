@@ -2,9 +2,9 @@ name: CI - Quality & Tests
 
 on:
   push:
-    branches: [ "main", "develop" ]
+    branches: [ "main", "develop", "ci-testing" ]
   pull_request:
-    branches: [ "main", "develop" ]
+    branches: [ "main", "develop", "ci-testing" ]
 
 jobs:
   # ------------------------------------------------------------------
@@ -86,7 +86,7 @@ jobs:
           DB_USERNAME: test_user
           DB_PASSWORD: test_password
           DB_DATABASE: test_db
-        run: npm run typeorm migration:run --if-present
+        run: npx typeorm migration:run --if-present
         # If you don't have migrations yet, you might use: npm run typeorm schema:sync
 
       - name: Run Backend Tests (Jest)
