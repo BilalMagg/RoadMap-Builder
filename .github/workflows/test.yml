@@ -1,0 +1,164 @@
+name: CI - Quality & Tests
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main", "develop" ]
+
+jobs:
+  # ------------------------------------------------------------------
+  # JOB 1: LINTING & TYPE CHECKING (Fail Fast)
+  # Checks if code is clean before running heavy tests
+  # ------------------------------------------------------------------
+  code-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install Dependencies (Root & Recursive)
+        # Assuming you might run npm install in root to bootstrap, 
+        # or install individually. Here we install both.
+        run: |
+          cd backend && npm ci
+          cd ../frontend && npm ci
+
+      - name: Lint Backend
+        run: cd backend && npm run lint --if-present
+
+      - name: Lint Frontend
+        run: cd frontend && npm run lint --if-present
+
+  # ------------------------------------------------------------------
+  # JOB 2: BACKEND UNIT & INTEGRATION TESTS
+  # Spins up a ephemeral Postgres Container
+  # ------------------------------------------------------------------
+  backend-tests:
+    needs: code-quality
+    runs-on: ubuntu-latest
+    
+    # Service Containers: This creates a real Postgres DB accessible via localhost:5432
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        # Simple health check to ensure DB is ready before steps start
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'backend/package-lock.json'
+
+      - name: Install Backend Dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Run Database Migrations
+        # Important: Ensure your ORM syncs the schema before tests run
+        working-directory: ./backend
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USERNAME: test_user
+          DB_PASSWORD: test_password
+          DB_DATABASE: test_db
+        run: npm run typeorm migration:run --if-present
+        # If you don't have migrations yet, you might use: npm run typeorm schema:sync
+
+      - name: Run Backend Tests (Jest)
+        working-directory: ./backend
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USERNAME: test_user
+          DB_PASSWORD: test_password
+          DB_DATABASE: test_db
+        run: npm run test
+
+  # ------------------------------------------------------------------
+  # JOB 3: FRONTEND E2E TESTS (Cypress)
+  # Needs to run the Backend and Frontend together
+  # ------------------------------------------------------------------
+  cypress-e2e:
+    needs: code-quality
+    runs-on: ubuntu-latest
+    
+    # We need the DB for the backend to start
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      # Install ALL dependencies
+      - name: Install Dependencies
+        run: |
+          cd backend && npm ci
+          cd ../frontend && npm ci
+
+      # Start Backend in Background
+      - name: Start Backend Server
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USERNAME: test_user
+          DB_PASSWORD: test_password
+          DB_DATABASE: test_db
+          PORT: 3000
+        run: |
+          cd backend
+          npm run dev &
+          echo "Backend starting on port 3000..."
+
+      # Run Cypress
+      # This action handles caching Cypress binary and running the tests
+      - name: Cypress Run
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: ./frontend
+          start: npm run dev
+          wait-on: 'http://localhost:5173, http://localhost:3000' # Waits for React AND Express
+          wait-on-timeout: 120
+        env:
+          # Inject backend URL to frontend
+          VITE_API_URL: http://localhost:3000
