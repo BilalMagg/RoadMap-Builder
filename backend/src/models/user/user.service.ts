@@ -8,9 +8,8 @@ export class UserService {
     constructor(private userRepo:IUserRepository,
                private tokenService: RefreshTokenService
     ){ }
-   
     
-   async signUp (userdata:UserRequestDto):Promise<UserResponseDto> {
+    async signUp (userdata:UserRequestDto):Promise<UserResponseDto> {
           const { email, password, username } = userdata;
           
           const existingEmail = await this.userRepo.findByEmail(email);
@@ -28,7 +27,7 @@ export class UserService {
           });
           return UserResponseDto.fromEntity(newUser);
     }
-   async login(loginDto: LoginRequestDto) {
+    async login(loginDto: LoginRequestDto) {
 
         const {email , password} = loginDto;
         
@@ -42,14 +41,14 @@ export class UserService {
        let accessToken: string;
        let refreshToken: string | null = null;
 
-              if (loginDto.rememberMe == true) {
+              if (loginDto.rememberMe) {
                  
                   const tokens = await this.tokenService.createFullSession(user);
                   accessToken = tokens.accessToken;
                   refreshToken = tokens.refreshToken;
 
               } else {
-                
+  
                   accessToken = this.tokenService.createAccessTokenOnly(user);
                   refreshToken = null;
                  
@@ -71,19 +70,5 @@ export class UserService {
             user:UserProfilResponse.fromEntity(user)
            }
     }
-
-
- /*    async refreshToken(oldToken: string) {
-    const payload = jwt.verify(oldToken, process.env.JWT_REFRESH_SECRET!) as any;
-    const user = await this.userRepo.findById(payload.id);
-    if (!user) throw new Error('User not found');
-
-    const newAccessToken = this.generateToken(user, process.env.JWT_ACCESS_SECRET!, '15m');
-    const newRefreshToken = this.generateToken(user, process.env.JWT_REFRESH_SECRET!, '7d');
-    
-    return { newAccessToken , newRefreshToken };
-  } */
-
-   
 
 }

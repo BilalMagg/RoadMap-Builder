@@ -73,7 +73,7 @@ export class RefreshTokenService  {
 
       if (payload.id) {
         console.warn(`[SECURITY] Tentative de vol de session détectée pour User ${payload.id}`);
-
+         
       }
       throw new Error("Utilisation de token frauduleux détectée. Session fermée.");
     }

@@ -87,7 +87,7 @@ describe('UserController Unit Tests', () => {
     });
   });
 
-  /*   describe('login', () => {
+    describe('login', () => {
       it('should set accessToken and refreshToken when rememberMe is true', async () => {
         mockRequest = {
           body: {
@@ -119,10 +119,10 @@ describe('UserController Unit Tests', () => {
           'refresh_token',
           expect.any(Object)
         );
-        expect(jsonSpy).toHaveBeenCalledWith({
-          message: 'Login successful',
-          user: { id: '1', username: 'said' }
-        });
+        expect(jsonSpy).toHaveBeenCalledWith(expect.objectContaining({
+        success: true,
+        message: 'Login successful'
+      }))
       });
   
       it('should set only accessToken when rememberMe is false', async () => {
@@ -156,12 +156,12 @@ describe('UserController Unit Tests', () => {
           expect.anything(),
           expect.anything()
         );
-        expect(jsonSpy).toHaveBeenCalledWith({
-          message: 'Login successful',
-          user: { id: '1', username: 'said' }
-        });
+       expect(jsonSpy).toHaveBeenCalledWith(expect.objectContaining({
+        success: true,
+        message: 'Login successful'
+      }));
       });
-  }); */
+  });
 
   describe('getProfil', () => {
     it('should return 200 and user profile when successful', async () => {

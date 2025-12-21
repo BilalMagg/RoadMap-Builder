@@ -22,7 +22,7 @@ export function validationMiddleware(type: any, skipMissingProperties = false): 
               errors: dtoErrors 
           });
         } else {
-          req.body = dtoObj;
+    /*       req.body = dtoObj; */
           next();
         }
       });
