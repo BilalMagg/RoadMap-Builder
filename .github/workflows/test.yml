@@ -82,9 +82,11 @@ jobs:
         working-directory: ./backend
         env:
           # Trigger the Test Configuration in your Factory
-          NODE_ENV: test
+          NODE_ENV: dev
           DB_DEV_TYPE: postgres
-          DB_TEST_TYPE: postgres
+          ENV_DEV: dev
+          ENV_TEST: test
+          ENV_PROD: prod
           # Map your specific App variables to the Service Container
           HOST: localhost
           DB_PORT: 5432
