@@ -1,8 +1,8 @@
-import { DatabaseFactory } from "./config/database.factory";
 import "reflect-metadata";
 import app from "./app";
 import { AppDataSource } from "./config/dbConfig";
 const PORT = process.env.PORT || 3000;
+
 async function start() {
   try {
     
