@@ -1,8 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
-import { ReactNode } from "react";
+import { type ReactNode } from "react";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import Logo from "./Logo";
+import { useAuth } from "../../context/AuthContext";
 import styles from "./Layout.module.css";
 
 interface LayoutProps {
@@ -13,8 +14,14 @@ interface LayoutProps {
 export default function Layout({ children, hideNav = false }: LayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { isAuthenticated, user, logout } = useAuth();
 
   const isActive = (path: string) => location.pathname === path;
+
+  const handleLogout = () => {
+    logout();
+    setMobileMenuOpen(false);
+  };
 
   if (hideNav) {
     return <>{children}</>;
@@ -41,12 +48,25 @@ export default function Layout({ children, hideNav = false }: LayoutProps) {
 
           {/* Desktop Auth Buttons */}
           <div className={styles.navAuthButtons}>
-            <Link to="/login" className={styles.signInLink}>
-              Sign In
-            </Link>
-            <Link to="/signup" className={styles.getStartedButton}>
-              Get Started
-            </Link>
+            {isAuthenticated ? (
+              <>
+                <span style={{ fontSize: "0.875rem", color: "var(--text-secondary)", marginRight: "1rem" }}>
+                  {user?.username || user?.email}
+                </span>
+                <button onClick={handleLogout} className={styles.signInLink} style={{ cursor: "pointer", border: "none", background: "none" }}>
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className={styles.signInLink}>
+                  Sign In
+                </Link>
+                <Link to="/signup" className={styles.getStartedButton}>
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -75,13 +95,26 @@ export default function Layout({ children, hideNav = false }: LayoutProps) {
               <a href="#contact" className={styles.mobileMenuLink}>
                 Contact
               </a>
-                <div style={{ paddingTop: "0.75rem", borderTop: "1px solid var(--border-color)", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                <Link to="/login" className={styles.mobileMenuLink}>
-                  Sign In
-                </Link>
-                <Link to="/signup" className={styles.getStartedButton} style={{marginBottom: 0}}>
-                  Get Started
-                </Link>
+              <div style={{ paddingTop: "0.75rem", borderTop: "1px solid var(--border-color)", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                {isAuthenticated ? (
+                  <>
+                    <div style={{ fontSize: "0.875rem", color: "var(--text-secondary)", padding: "0.5rem 0" }}>
+                      {user?.username || user?.email}
+                    </div>
+                    <button onClick={handleLogout} className={styles.mobileMenuLink} style={{ cursor: "pointer", border: "none", background: "none", textAlign: "left", padding: "0.5rem 0" }}>
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login" className={styles.mobileMenuLink}>
+                      Sign In
+                    </Link>
+                    <Link to="/signup" className={styles.getStartedButton} style={{ marginBottom: 0 }}>
+                      Get Started
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>

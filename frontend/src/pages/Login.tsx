@@ -9,6 +9,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const { login, isLoading } = useAuth();
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      await login(email, password);
+      await login(email, password, rememberMe);
       navigate("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed. Please try again.");
@@ -125,7 +126,12 @@ export default function Login() {
 
             {/* Remember me */}
             <div className={styles.authCheckbox}>
-              <input id="remember" type="checkbox" />
+              <input
+                id="remember"
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
               <label htmlFor="remember">Keep me signed in</label>
             </div>
 
