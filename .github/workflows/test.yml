@@ -130,7 +130,7 @@ jobs:
   # Needs to run the Backend and Frontend together
   # ------------------------------------------------------------------
   cypress-e2e:
-    needs: code-quality
+    needs: [backend-tests, frontend-tests]
     runs-on: ubuntu-latest
     
     # We need the DB for the backend to start
@@ -182,7 +182,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           working-directory: ./frontend
-          start: npm run dev
+          start: npm run cypress
           wait-on: 'http://localhost:5173, http://localhost:3000' # Waits for React AND Express
           wait-on-timeout: 120
         env:

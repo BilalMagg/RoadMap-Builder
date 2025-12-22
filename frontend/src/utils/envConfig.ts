@@ -1,7 +1,5 @@
 import dotenv from 'dotenv';
 
-
-
 const getEnv = () => {
   if (typeof (import.meta)?.env !== 'undefined') {
     return (import.meta).env;
