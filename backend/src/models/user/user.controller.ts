@@ -1,7 +1,6 @@
-
 import { UserService } from "./user.service";
 
-import { Request ,Response} from "express";
+import { Request, Response } from "express";
 import { LoginRequestDto, UserRequestDto } from "./user.dto";
 export class UserController {
     constructor(private userService: UserService) { }
@@ -66,4 +65,41 @@ export class UserController {
         });
 
      }
+     async forgotPassword(req:Request,res:Response){
+        try{
+            const email=req.body.email;
+        const result:any =await this.userService.forgotPassword(email);
+            return res.status(200).json({
+                message:result.message
+            })
+        }catch(err:any){
+            //res.json=body json
+          let status = 500;
+        if (err.message === 'Email is required') status = 400;
+        if (err.message === 'User with this email does not exist') status = 404;
+
+        return res.status(status).json({ message: err.message });
+        }
+     }
+
+     async resetPassword(req:Request,res:Response){
+        try{
+             const token=req.params.token;
+             const id=req.params.id;
+             const newPassword=req.body.password;
+            const result:any=await this.userService.resetPassword(token,id,newPassword);
+            
+
+            return res.status(200).json({
+               message: result.message
+            })
+        }catch(err:any){
+           let status = 400; 
+    if (err.message === "User does not exist") status = 404;
+    if (err.message === "Invalid or expired token") status = 401;
+
+    return res.status(status).json({ message: err.message });
+        }
+    }
+     
 }   

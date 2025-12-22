@@ -1,9 +1,8 @@
 import { Repository } from "typeorm";
-// import { appDataSource } from "../config/postgres/postgres.config"; // Ton DataSource TypeORM
 import { UserEntity } from "./user.entity";
-import { IUserRepository } from "../interface/user/user.interface";
+import { IUserRepository } from "./interface/user.interface";
 import { UserRequestDto } from "./user.dto";
-import { AppDataSource } from "../config/dbConfig";
+import { AppDataSource } from "../../config/dbConfig";
 
 export class UserRepository implements IUserRepository {
   private repository: Repository<UserEntity>;

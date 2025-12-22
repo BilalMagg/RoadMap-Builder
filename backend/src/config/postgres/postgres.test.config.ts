@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 import { IDatabaseConfig } from "../database.interface";
-import { UserEntity } from "../../models/user.entity";
+import { UserEntity } from "../../models/user/user.entity";
 
 export const testDataSource = new DataSource({
     type: "postgres",

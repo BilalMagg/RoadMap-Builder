@@ -8,13 +8,14 @@ export async function checkAuth(req:Request,res:Response,next:NextFunction){
         });
     }
     try{
-        const decoded=jwt.verify(token,process.env.JWT_ACCESS_SECRET);
+        const decoded:any=jwt.verify(token,process.env.JWT_ACCESS_SECRET!);
         req.userId=decoded.id;
         next()
     }catch(err:any){
         if(err.name==="TokenExpiredError"){
             return res.status(401).json({
-                message:"Unauthorized:Token expired"
+                message:"Unauthorized:Token expired",
+                error: { code: "ACCESS_TOKEN_EXPIRED" }
             });
         }
     }

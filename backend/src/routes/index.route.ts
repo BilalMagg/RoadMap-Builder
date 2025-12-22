@@ -1,6 +1,6 @@
 
 
-import { userRouter } from "../models/user.route";
+import { userRouter } from "../models/user/user.route";
 import { Router } from "express";
 export const AllRoutes = Router();
 
