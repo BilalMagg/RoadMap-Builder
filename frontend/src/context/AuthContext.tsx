@@ -44,9 +44,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const verifyAuth = async () => {
       try {
-        const response = await api.get<ApiResponse<User>>("/auth/profil");
-        if (response.data.success && response.data.data) {
-          setUser(response.data.data);
+        const response = await api.get<ApiResponse<{ user: User }>>("/auth/profil");
+        if (response.data.success && response.data.data?.user) {
+          setUser(response.data.data.user);
           setIsAuthenticated(true);
         }
       } catch (err) {

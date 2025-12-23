@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import Layout from "../components/layout/Layout";
+import Layout from "../../components/layout/Layout";
 import { ArrowLeft } from "lucide-react";
 import styles from "./NotFound.module.css";
 

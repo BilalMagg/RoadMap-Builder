@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Layout from "../components/layout/Layout";
+import Layout from "../../components/layout/Layout";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import styles from "./Auth.module.css";
 
 export default function Login() {
@@ -19,7 +19,7 @@ export default function Login() {
 
     try {
       await login(email, password, rememberMe);
-      navigate("/");
+      navigate("/profile");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed. Please try again.");
     }

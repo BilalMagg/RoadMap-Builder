@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Layout from "../components/layout/Layout";
+import Layout from "../../components/layout/Layout";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
-// import AnimatedRoadmap from "@/components/AnimatedRoadmap";
-// import PathfinderLogo from "@/components/PathfinderLogo";
+import { useAuth } from "../../context/AuthContext";
 import styles from "./Auth.module.css";
 
 export default function Signup() {
@@ -46,7 +44,7 @@ export default function Signup() {
 
     try {
       await signup(formData.name, formData.email, formData.password);
-      navigate("/");
+      navigate("/profile");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Signup failed. Please try again.");
     }

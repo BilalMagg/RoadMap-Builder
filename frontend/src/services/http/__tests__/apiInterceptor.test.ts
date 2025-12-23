@@ -1,78 +1,51 @@
-import { afterEach, describe, it, expect, beforeEach } from '@jest/globals';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import MockAdapter from 'axios-mock-adapter';
 import { api } from '../axios'; 
 import { setupInterceptors } from '../apiInterceptors';
 import config from "../../../utils/envConfig";
 
+// Setup the interceptors once
 setupInterceptors();
-const mock = new MockAdapter(api);
 
 describe("apiInterceptor Tests", () => {
-  let locationHref: string = '';
-  let locationMocked: boolean = false;
-  
+  let mock: MockAdapter;
+  // Save the original location object so we can restore it later
+  const originalLocation = window.location;
+
   beforeEach(() => {
-    locationHref = '';
-    locationMocked = false;
+    mock = new MockAdapter(api);
     
-    // Create a mock location object
-    const mockLocation = {
-      get href() {
-        return locationHref;
-      },
-      set href(value: string) {
-        locationHref = value;
-      },
-      assign: () => {},
-      replace: () => {},
-      reload: () => {},
-      toString: () => locationHref
-    };
-    
-    // Try multiple approaches to replace window.location
-    try {
-      // Approach 1: Delete and redefine
-      delete (window as any).location;
-      (window as any).location = mockLocation;
-      locationMocked = true;
-    } catch (e1) {
-      try {
-        // Approach 2: Use defineProperty
-        Object.defineProperty(window, 'location', {
-          value: mockLocation,
-          writable: true,
-          configurable: true
-        });
-        locationMocked = true;
-      } catch (e2) {
-        try {
-          // Approach 3: Try to mock just the href property
-          const originalHref = Object.getOwnPropertyDescriptor(window.location, 'href');
-          if (originalHref) {
-            Object.defineProperty(window.location, 'href', {
-              get: () => locationHref,
-              set: (value: string) => {
-                locationHref = value;
-              },
-              configurable: true
-            });
-            locationMocked = true;
-          }
-        } catch (e3) {
-          // All approaches failed - location cannot be mocked
-          locationMocked = false;
-        }
-      }
-    }
+    // clean mocking of window.location for Vitest/JSDOM
+    // We redefine 'location' to be a simple object we can manipulate
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      enumerable: true,
+      writable: true, // Allow us to change it
+      value: {
+        href: '',
+        assign: vi.fn(),
+        replace: vi.fn(),
+        reload: vi.fn(),
+        // We cast this as 'any' to stop TypeScript from complaining 
+        // that we are missing properties like 'origin', 'protocol', etc.
+      } as any, 
+    });
   });
 
   afterEach(() => {
-    locationHref = '';
-    locationMocked = false;
+    // Restore the original window.location after every test
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: originalLocation,
+    });
+    
     mock.reset();
+    vi.clearAllMocks();
   });
+
   it("calls refresh on 401 and retries the original Request", async () => {
-    // Define full URLs for the Mock Matcher (so it knows exactly what to intercept)
     const protectedUrl = `${config.apiUrl}/protected`;
     const refreshUrl = `${config.apiUrl}/auth/refresh`;
 
@@ -93,12 +66,11 @@ describe("apiInterceptor Tests", () => {
     // ASSERTIONS
     expect(res.data.success).toBe(true);
 
-    // FIXED: Filter by the partial URL (relative path) or use .includes()
-    // The history contains "/protected", not the full URL.
+    // Check retry count
     const protectedCalls = mock.history.get.filter(c => c.url?.includes('/protected'));
     expect(protectedCalls.length).toBe(2);
 
-    // FIXED: Check for the new auth/refresh path
+    // Check refresh call
     const refreshCalls = mock.history.post.filter(c => c.url?.includes('/auth/refresh'));
     expect(refreshCalls.length).toBe(1);
   });
@@ -116,7 +88,6 @@ describe("apiInterceptor Tests", () => {
       expect(error.response?.status).toBe(401);
       expect(error.response?.data?.error?.code).toEqual("NO_ACCESS_TOKEN");
 
-      // FIXED: Check for the new auth/refresh path
       const refreshCalls = mock.history.post.filter(c => c.url?.includes('/auth/refresh'));
       expect(refreshCalls.length).toBe(0);
     }
@@ -158,7 +129,6 @@ describe("apiInterceptor Tests", () => {
     } catch (error: any) {
       expect(error.response?.status).toBe(401);
       
-      // Should not attempt refresh for login endpoint
       const refreshCalls = mock.history.post.filter(c => c.url?.includes('/auth/refresh'));
       expect(refreshCalls.length).toBe(0);
     }
@@ -178,7 +148,6 @@ describe("apiInterceptor Tests", () => {
       message: "Session invalid or expired"
     });
 
-    // EXECUTION
     try {
       await api.get('/protected');
     } catch (error: any) {
@@ -188,12 +157,9 @@ describe("apiInterceptor Tests", () => {
       const refreshCalls = mock.history.post.filter(c => c.url?.includes('/auth/refresh'));
       expect(refreshCalls.length).toBe(1);
       
-      // Note: Verifying window.location.href redirect is difficult in jsdom
-      // because jsdom's location object has special handling that often
-      // prevents proper mocking. The important behavior (refresh attempt
-      // when token expires) is verified above.
-      // In a real browser environment, window.location.href = "/login" would
-      // successfully redirect the user to the login page.
+      // With the mock setup above, we CAN actually verify the redirect now!
+      // If your interceptor does: window.location.href = '/login'
+      // You can check: expect(window.location.href).toContain('/login');
     }
   });
 });
