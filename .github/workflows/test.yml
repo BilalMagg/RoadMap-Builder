@@ -194,6 +194,7 @@ jobs:
 
       # Wait for servers to be ready
       - name: Wait for Servers
+        working-directory: ./e2e
         run: |
           npx wait-on http://localhost:3000 http://localhost:5173 -t 120000
           echo "Both servers are ready!"
