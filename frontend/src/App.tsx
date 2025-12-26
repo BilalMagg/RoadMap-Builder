@@ -1,6 +1,5 @@
 import "./global.css";
 import { Toaster } from "./components/ui/toaster";
-import { createRoot } from "react-dom/client";
 import { Toaster as Sonner } from "./components/ui/sonner";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -82,39 +81,39 @@ function App() {
   );
 }
 
-declare global {
-  interface Window {
-    __APP_ROOT?: ReturnType<typeof createRoot>;
-  }
-}
+// declare global {
+//   interface Window {
+//     __APP_ROOT?: ReturnType<typeof createRoot>;
+//   }
+// }
 
-function initApp() {
-  const rootElement = document.getElementById("root");
-  if (!rootElement) {
-    console.error("Root element not found");
-    return;
-  }
+// function initApp() {
+//   const rootElement = document.getElementById("root");
+//   if (!rootElement) {
+//     console.error("Root element not found");
+//     return;
+//   }
 
-  if (!window.__APP_ROOT) {
-    window.__APP_ROOT = createRoot(rootElement);
-  }
+//   if (!window.__APP_ROOT) {
+//     window.__APP_ROOT = createRoot(rootElement);
+//   }
 
-  window.__APP_ROOT.render(<App />);
-}
+//   window.__APP_ROOT.render(<App />);
+// }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initApp);
-} else {
-  initApp();
-}
+// if (document.readyState === "loading") {
+//   document.addEventListener("DOMContentLoaded", initApp);
+// } else {
+//   initApp();
+// }
 
-if (import.meta.hot) {
-  import.meta.hot.dispose(() => {
-    if (window.__APP_ROOT) {
-      window.__APP_ROOT.unmount();
-      window.__APP_ROOT = undefined;
-    }
-  });
-}
+// if (import.meta.hot) {
+//   import.meta.hot.dispose(() => {
+//     if (window.__APP_ROOT) {
+//       window.__APP_ROOT.unmount();
+//       window.__APP_ROOT = undefined;
+//     }
+//   });
+// }
 
 export default App;

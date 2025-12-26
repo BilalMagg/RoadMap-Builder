@@ -187,13 +187,6 @@ describe("apiInterceptor Tests", () => {
       // Should have attempted refresh
       const refreshCalls = mock.history.post.filter(c => c.url?.includes('/auth/refresh'));
       expect(refreshCalls.length).toBe(1);
-      
-      // Note: Verifying window.location.href redirect is difficult in jsdom
-      // because jsdom's location object has special handling that often
-      // prevents proper mocking. The important behavior (refresh attempt
-      // when token expires) is verified above.
-      // In a real browser environment, window.location.href = "/login" would
-      // successfully redirect the user to the login page.
     }
   });
 });

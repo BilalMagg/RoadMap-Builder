@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import { api } from "../services/http/axios";
+import { api } from "../services/http/index";
 
 interface User {
   id: string;
@@ -37,7 +37,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Verify authentication status on mount
@@ -53,7 +53,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Not authenticated or token expired
         setIsAuthenticated(false);
         setUser(null);
-      }
+      } finally {
+      // <--- ADD THIS: Stop loading regardless of success or failure
+      setIsLoading(false);
+    }
     };
 
     verifyAuth();
@@ -151,6 +154,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       // Call logout endpoint to clear cookies on backend
+      // Backend cookies will be cleared by browser when they expire
       await api.post("/auth/logout").catch(() => {
         // Ignore errors if logout endpoint doesn't exist
       });
