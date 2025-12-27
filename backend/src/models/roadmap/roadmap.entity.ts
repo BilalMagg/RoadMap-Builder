@@ -67,8 +67,8 @@ export class RoadmapEntity {
   @IsString({ message: "Description must be a string" })
   description?: string;
 
-  @Column({ 
-    type: "enum", 
+  @Column({
+    type: "enum",
     enum: ["DRAFT", "PUBLISHED", "ARCHIVED"],
     default: "DRAFT"
   })
@@ -76,7 +76,7 @@ export class RoadmapEntity {
   @IsString({ message: "Status must be a string" })
   status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
 
-  @Column({ type: "jsonb" })
+  @Column({ type: "jsonb", default: {}, nullable: true })
   @IsObject({ message: "Data must be a valid object" })
   data!: RoadmapData;
 
