@@ -3,6 +3,7 @@ import { IDatabaseConfig } from "../database.interface";
 import { UserEntity } from "../../models/user/user.entity";
 import { RefreshTokenEntity } from "../../models/refreshToken/refreshToken.entity";
 import { RoadmapEntity } from "../../models/roadmap/roadmap.entity";
+import { RoadmapEventEntity } from "../../models/roadmap-event/roadmap-event.entity";
 
 export const testDataSource = new DataSource({
     type: "postgres",
@@ -14,7 +15,7 @@ export const testDataSource = new DataSource({
     synchronize: true,
     dropSchema: true,
     logging: false,
-    entities: [UserEntity, RefreshTokenEntity, RoadmapEntity],
+    entities: [UserEntity, RefreshTokenEntity, RoadmapEntity, RoadmapEventEntity],
 });
 
 export class PostgresTestConfig implements IDatabaseConfig {
