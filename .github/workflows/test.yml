@@ -176,6 +176,9 @@ jobs:
           DB_TEST_USER: test_user
           DB_TEST_PASSWORD: test_password
           DB_TEST_NAME: roadmap_test_db
+          ENV_DEV: dev
+          ENV_TEST: test
+          ENV_PROD: prod
           JWT_ACCESS_SECRET: super_secret_test_access
           JWT_REFRESH_SECRET: super_secret_test_refresh
           PORT: 3000
