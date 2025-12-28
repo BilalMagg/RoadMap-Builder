@@ -92,6 +92,24 @@ export class UserController {
             );
         }
     }
+   
+
+    async EditProfil(req:Request, res:Response){
+        const updates= req.body;
+       const userId:any=req.userId;
+       try{
+        const updatedUser :any=await this.userService.EditProfil(updates,userId);
+        return res.status(200).json(ApiResponse.success(updatedUser ,"Profil change successfully"));
+       }catch(err:any){
+        let status=500;
+        if (err.message === 'user not found') status = 404;
+        if(err.message === 'no data provided to update') status=400;
+        if(err.message === 'no valid field to update') status=400;
+            return res.status(status).json(ApiResponse.error(err.message || "Internal server error"));
+       }
+
+       
+    }
 
     async logout(req: Request, res: Response) {
         res.clearCookie('accessToken');

@@ -6,6 +6,7 @@ import { RefreshTokenService } from "../refreshToken/refreshToken.service";
 import jwt from 'jsonwebtoken';
 import nodemailer from "nodemailer"
 import { IRoadmapRepository } from "../roadmap/interface/roadmap.interface";
+import { UserEntity } from "./user.entity";
 
 export class UserService {
   constructor(private userRepo: IUserRepository,
@@ -76,6 +77,41 @@ export class UserService {
       user: UserProfilResponse.fromEntity(user, { roadmaps: roadmapCount })
     }
   }
+
+  async EditProfil(updates: any, userId: string) {
+     if(!updates || Object.keys(updates).length===0){
+     throw new Error('no data provided to update');
+   }
+  const user = await this.userRepo.findById(userId);
+
+  if (!user) {
+    throw new Error('user not found');
+  }
+  
+  const allowedFields = ["firstName", "lastName", "username", "email", "avatar", "age"];
+  let hasUpdate = false;
+
+  for (let key of allowedFields) {
+    if (updates.hasOwnProperty(key)) {
+      if (updates[key] === null) {
+        throw new Error(`value of ${key} is null`);
+      }
+      (user as any)[key] = updates[key];
+      hasUpdate = true;
+    }
+  }
+
+  if (!hasUpdate) {
+    throw new Error('no valid field to update');
+  }
+
+  const UserUpdate=await this.userRepo.save(user);
+
+  return { 
+    
+    userUpdate:UserResponseDto.fromEntity(UserUpdate),
+   };
+}
 
   async forgotPassword(email: string) {
     if (!email) {
