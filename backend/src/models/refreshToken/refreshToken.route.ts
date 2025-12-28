@@ -4,6 +4,6 @@ import { RefreshTokenRegistry } from "./refreshToken.registry";
 const routerRef = Router();
 
 
-routerRef.post("/refresh", (req, res) => RefreshTokenRegistry.controller.refresh(req, res));
+routerRef.post("/", (req, res) => RefreshTokenRegistry.controller.refresh(req, res));
 
 export default routerRef;
