@@ -16,7 +16,7 @@ export class RoadmapEventService {
      * @param type - The type of event (from RoadmapEventType enum)
      * @param payload - Small JSON object containing event details (e.g., nodeId, changes)
      * 
-     * TODO: This will be called by RoadmapService after successful PUT /roadmaps updates.
+     * TODO: This will be called by RoadmapService after successful PATCH /roadmaps updates.
      * TODO: In the future, this might also handle snapshot logic (SNAPSHOT_CREATED).
      * 
      * Note: This is part of an append-only event log.

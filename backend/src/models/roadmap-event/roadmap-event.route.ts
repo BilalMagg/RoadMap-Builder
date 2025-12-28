@@ -10,7 +10,7 @@ export const roadmapEventRouter = Router();
  * This route allows testing the insertion logic before it is integrated 
  * into the main Roadmap flow.
  * 
- * TODO: Remove these routes once PUT /roadmaps integration is complete.
+ * TODO: Remove these routes once Patch /roadmaps integration is complete.
  */
 
 // POST /roadmap-events/test
