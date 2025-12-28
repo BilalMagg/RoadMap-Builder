@@ -40,4 +40,9 @@ roadmapRouter.delete(
   "/:id",
   (req: Request, res: Response) => roadmapController.deleteRoadmap(req, res)
 );
+roadmapRouter.patch(
+  "/:id",
+  (req: Request, res: Response) => roadmapController.patchRoadmapGraph(req, res)
+);
+
 
