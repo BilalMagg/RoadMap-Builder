@@ -9,5 +9,6 @@ export interface IRoadmapRepository {
   delete(id: string): Promise<boolean>;
   findByIdAndUserId(id: string, userId: string): Promise<RoadmapEntity | null>;
   countByUserId(userId: string): Promise<number>;
+  getPublicRoadmaps(): Promise<RoadmapEntity[]>;
 }
 

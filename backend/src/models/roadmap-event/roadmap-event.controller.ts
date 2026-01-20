@@ -56,8 +56,7 @@ export class RoadmapEventController {
             // Return success with a reminder that this is temporary
             res.status(201).json({
                 message: "Event logged successfully (TEMPORARY TEST ENDPOINT)",
-                data: event,
-                warning: "TODO: Remove this endpoint once PUT /roadmap integration is complete."
+                data: event
             });
         } catch (error: any) {
             res.status(500).json({

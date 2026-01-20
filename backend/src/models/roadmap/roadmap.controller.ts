@@ -4,7 +4,7 @@ import { ApiResponse } from "../../utils/api/api.response";
 import { ValidationError } from "class-validator";
 
 export class RoadmapController {
-  constructor(private roadmapService: RoadmapService) {}
+  constructor(private roadmapService: RoadmapService) { }
 
   async createRoadmap(req: Request, res: Response): Promise<Response> {
     try {
@@ -80,6 +80,19 @@ export class RoadmapController {
     }
   }
 
+  async getPublicRoadmaps(req: Request, res: Response): Promise<Response> {
+    try {
+      const roadmaps = await this.roadmapService.getPublicRoadmaps();
+      return res.status(200).json(
+        ApiResponse.success(roadmaps, "Public roadmaps retrieved successfully")
+      );
+    } catch (err: any) {
+      return res.status(500).json(
+        ApiResponse.error(err.message || "Internal server error")
+      );
+    }
+  }
+
   async updateRoadmap(req: Request, res: Response): Promise<Response> {
     try {
       const userId = req.userId;
@@ -138,26 +151,26 @@ export class RoadmapController {
       );
     }
   }
-   async patchRoadmapGraph(req:Request, res:Response) {
-  const userId:any = req.userId; // middleware auth
-  const roadmapId = req.params.id;
-  const { operations } = req.body;
-  try{
-  const result:any=await this.roadmapService.applyOperations(userId, roadmapId,operations);
-  return res.status(200).json(ApiResponse.success(result ,result.message));
-  
-  }catch(err:any){
-    let  status=500;
-    if (err.message === 'This user does not have any roadmap') status = 404;
-        if(err.message === 'Node not found') status=404;
-            return res.status(status).json(ApiResponse.error(err.message || "Internal server error"));
-  }
-   
-    
- 
+  async patchRoadmapGraph(req: Request, res: Response) {
+    const userId: any = req.userId; // middleware auth
+    const roadmapId = req.params.id;
+    const { operations } = req.body;
+    try {
+      const result: any = await this.roadmapService.applyOperations(userId, roadmapId, operations);
+      return res.status(200).json(ApiResponse.success(result, result.message));
 
-  
-};
+    } catch (err: any) {
+      let status = 500;
+      if (err.message === 'This user does not have any roadmap') status = 404;
+      if (err.message === 'Node not found') status = 404;
+      return res.status(status).json(ApiResponse.error(err.message || "Internal server error"));
+    }
+
+
+
+
+
+  };
 
 }
 

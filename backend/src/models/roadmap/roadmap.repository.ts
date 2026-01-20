@@ -62,8 +62,16 @@ export class RoadmapRepository implements IRoadmapRepository {
   async countByUserId(userId: string): Promise<number> {
     return await this.repository.count({ where: { userId } });
   }
-    async findByIdAndUser(roadmapId:string, UserId:string){
-            return await this.repository.findOne({where:{id:roadmapId,userId:UserId}})
-          }
+
+  async findByIdAndUser(roadmapId: string, UserId: string) {
+    return await this.repository.findOne({ where: { id: roadmapId, userId: UserId } })
+  }
+
+  async getPublicRoadmaps(): Promise<RoadmapEntity[]> {
+    return await this.repository.find({
+      where: { status: "PUBLISHED" },
+      order: { updatedAt: "DESC" },
+    });
+  }
 }
 

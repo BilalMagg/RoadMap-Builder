@@ -14,4 +14,4 @@ export const roadmapEventRouter = Router();
  */
 
 // POST /roadmap-events/test
-roadmapEventRouter.post("/test", (req, res) => roadmapEventController.testInsertEvent(req, res));
+roadmapEventRouter.post("/event-log", (req, res) => roadmapEventController.testInsertEvent(req, res));

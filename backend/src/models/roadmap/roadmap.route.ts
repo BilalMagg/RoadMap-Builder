@@ -6,6 +6,12 @@ import { checkAuth } from "../../middlewares/checkAuth";
 
 export const roadmapRouter = Router();
 
+// Get all public roadmaps
+roadmapRouter.get(
+  "/public",
+  (req: Request, res: Response) => roadmapController.getPublicRoadmaps(req, res)
+);
+
 // All routes require authentication
 roadmapRouter.use(checkAuth);
 
