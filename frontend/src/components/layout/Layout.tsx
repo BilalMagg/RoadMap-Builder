@@ -47,6 +47,9 @@ export default function Layout({ children, hideNav = false }: LayoutProps) {
                 My Roadmaps
               </Link>
             )}
+            <Link to="/feed" className={isActive("/feed") ? styles.active : ""}>
+              Feed
+            </Link>
             <Link to="/about" className={isActive("/about") ? styles.active : ""}>
               About
             </Link>
@@ -103,6 +106,9 @@ export default function Layout({ children, hideNav = false }: LayoutProps) {
                   My Roadmaps
                 </Link>
               )}
+              <Link to="/feed" className={styles.mobileMenuLink}>
+                Feed
+              </Link>
               <Link to="/about" className={styles.mobileMenuLink}>
                 About
               </Link>

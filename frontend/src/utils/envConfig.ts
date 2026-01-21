@@ -4,13 +4,13 @@ const getEnv = () => {
   if (typeof (import.meta)?.env !== 'undefined') {
     return (import.meta).env;
   }
-  
+
   // 2. Essaie process.env (Node.js/Jest)
   if (typeof process !== 'undefined' && process.env) {
     dotenv.config();
     return process.env;
   }
-  
+
   // 4. Fallback : objet vide
   return {};
 };
@@ -18,7 +18,7 @@ const getEnv = () => {
 const env = getEnv();
 
 const config = {
-  apiUrl: env.VITE_API_URL
+  apiUrl: env.VITE_API_URL || "http://localhost:3000/api"
 };
 
 export default config;

@@ -19,6 +19,7 @@ interface UpdateRoadmapDto {
   title?: string;
   description?: string;
   data?: RoadmapData;
+  isPublic?: boolean;
 }
 
 interface RoadmapListItem {

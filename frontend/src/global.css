@@ -1,5 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap");
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
   margin: 0;
   padding: 0;
@@ -63,7 +67,12 @@ body {
   line-height: 1.6;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 700;
   line-height: 1.2;
 }
@@ -110,7 +119,8 @@ button {
   transition: all 0.2s;
 }
 
-input, textarea {
+input,
+textarea {
   font-family: "Inter", sans-serif;
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
@@ -124,5 +134,3 @@ input:focus {
   border-color: var(--primary-500);
   box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
 }
-
-/* Remove Tailwind directives and use CSS Modules instead */

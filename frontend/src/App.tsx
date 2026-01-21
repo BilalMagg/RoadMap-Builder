@@ -20,6 +20,7 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import About from "./pages/about/About";
 import Contact from "./pages/contact/Contact";
 import NotFound from "./pages/notFound/NotFound";
+import { FeedPage } from "./pages/FeedPage";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <RoadmapList />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/feed"
+                element={
+                  <ProtectedRoute>
+                    <FeedPage />
                   </ProtectedRoute>
                 }
               />
