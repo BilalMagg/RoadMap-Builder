@@ -20,13 +20,13 @@ export const setupInterceptors = () => {
         // Skip refresh for login/signup/refresh endpoints to avoid infinite loops
         if (originalRequest.url?.includes("/auth/login") || 
             originalRequest.url?.includes("/auth/signup") ||
-            originalRequest.url?.includes("/auth/refresh")) {
+            originalRequest.url?.includes("/refresh-token")) {
           return Promise.reject(error);
         }
 
         originalRequest._retry = true;
         try {
-          await api.post("/auth/refresh");
+          await api.post("/refresh-token");
           return api(originalRequest);
         } catch {
           // // Refresh failed, redirect to login

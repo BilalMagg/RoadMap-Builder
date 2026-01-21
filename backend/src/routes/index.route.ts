@@ -9,5 +9,4 @@ export const AllRoutes = Router();
 
 AllRoutes.use('/auth', userRouter);
 AllRoutes.use('/roadmaps', roadmapRouter);
-AllRoutes.use('/roadmap-events', roadmapEventRouter);
-AllRoutes.use('/auth', routerRef);
+AllRoutes.use('/refresh-token',routerRef);

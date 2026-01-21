@@ -206,7 +206,7 @@ beforeAll(async () => {
     
     it('should update user profile successfully', async () => {
     const response = await request(app)
-        .put('/api/user/edit-profile') // ton endpoint
+        .put('/api/auth/edit-profile') // ton endpoint
         .set('Cookie', [authCookie])
         .send({ firstName: 'Ali', lastName: 'Smith' });
 
@@ -218,7 +218,7 @@ beforeAll(async () => {
 it('should return 404 if user not found', async () => {
     const fakeToken = 'Bearer fakeToken';
     const response = await request(app)
-      .put('/user/edit-profile')
+      .put('/api/auth/edit-profile')
       .set('Cookie', [`accessToken=${fakeToken}`])
       .send({ firstName: 'Ali' });
 
@@ -228,7 +228,7 @@ it('should return 404 if user not found', async () => {
   });
  it('should return 400 if updates is empty', async () => {
     const response = await request(app)
-      .put('/user/edit-profile')
+      .put('/api/auth/edit-profile')
       .set('Cookie', [authCookie])
       .send({}); // updates vide
 
@@ -239,7 +239,7 @@ it('should return 404 if user not found', async () => {
 
   it('should return 400 if no valid field is provided', async () => {
     const response = await request(app)
-      .put('/user/edit-profile')
+      .put('/api/auth/edit-profile')
       .set('Cookie', [authCookie])
       .send({ invalidField: 'value' });
 
@@ -249,7 +249,7 @@ it('should return 404 if user not found', async () => {
   });
  it('should return 400 if field value is null', async () => {
     const response = await request(app)
-      .put('/user/edit-profile')
+      .put('/api/auth/edit-profile')
       .set('Cookie', [authCookie])
       .send({ firstName: null });
 

@@ -74,7 +74,7 @@ describe("apiInterceptor Tests", () => {
   it("calls refresh on 401 and retries the original Request", async () => {
     // Define full URLs for the Mock Matcher (so it knows exactly what to intercept)
     const protectedUrl = `${config.apiUrl}/protected`;
-    const refreshUrl = `${config.apiUrl}/auth/refresh`;
+    const refreshUrl = `${config.apiUrl}/refresh-token`;
 
     // 1. First call fails
     mock.onGet(protectedUrl).replyOnce(401, {
@@ -99,7 +99,7 @@ describe("apiInterceptor Tests", () => {
     expect(protectedCalls.length).toBe(2);
 
     // FIXED: Check for the new auth/refresh path
-    const refreshCalls = mock.history.post.filter(c => c.url?.includes('/auth/refresh'));
+    const refreshCalls = mock.history.post.filter(c => c.url?.includes('/refresh-token'));
     expect(refreshCalls.length).toBe(1);
   });
 
@@ -117,14 +117,14 @@ describe("apiInterceptor Tests", () => {
       expect(error.response?.data?.error?.code).toEqual("NO_ACCESS_TOKEN");
 
       // FIXED: Check for the new auth/refresh path
-      const refreshCalls = mock.history.post.filter(c => c.url?.includes('/auth/refresh'));
+      const refreshCalls = mock.history.post.filter(c => c.url?.includes('/refresh-token'));
       expect(refreshCalls.length).toBe(0);
     }
   });
 
   it("calls refresh on 401 with 'Token expired' message", async () => {
     const protectedUrl = `${config.apiUrl}/protected`;
-    const refreshUrl = `${config.apiUrl}/auth/refresh`;
+    const refreshUrl = `${config.apiUrl}/refresh-token`;
 
     // 1. First call fails with message-based error
     mock.onGet(protectedUrl).replyOnce(401, {
@@ -142,7 +142,7 @@ describe("apiInterceptor Tests", () => {
 
     // ASSERTIONS
     expect(res.data.success).toBe(true);
-    const refreshCalls = mock.history.post.filter(c => c.url?.includes('/auth/refresh'));
+    const refreshCalls = mock.history.post.filter(c => c.url?.includes('/refresh-token'));
     expect(refreshCalls.length).toBe(1);
   });
 
@@ -159,14 +159,14 @@ describe("apiInterceptor Tests", () => {
       expect(error.response?.status).toBe(401);
       
       // Should not attempt refresh for login endpoint
-      const refreshCalls = mock.history.post.filter(c => c.url?.includes('/auth/refresh'));
+      const refreshCalls = mock.history.post.filter(c => c.url?.includes('/refresh-token'));
       expect(refreshCalls.length).toBe(0);
     }
   });
 
   it("redirects to login when refresh fails", async () => {
     const protectedUrl = `${config.apiUrl}/protected`;
-    const refreshUrl = `${config.apiUrl}/auth/refresh`;
+    const refreshUrl = `${config.apiUrl}/refresh-token`;
 
     // 1. First call fails
     mock.onGet(protectedUrl).replyOnce(401, {
@@ -185,7 +185,7 @@ describe("apiInterceptor Tests", () => {
       expect(error.response?.status).toBe(401);
       
       // Should have attempted refresh
-      const refreshCalls = mock.history.post.filter(c => c.url?.includes('/auth/refresh'));
+      const refreshCalls = mock.history.post.filter(c => c.url?.includes('/refresh-token'));
       expect(refreshCalls.length).toBe(1);
     }
   });

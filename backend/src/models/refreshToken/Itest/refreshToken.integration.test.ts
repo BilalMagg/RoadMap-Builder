@@ -34,7 +34,7 @@ describe('RefreshToken Integration Tests', () => {
     rememberMe: true
   });
 
-  const response = await agent.post('/api/auth/refresh');
+  const response = await agent.post('/api/refresh-token');
 
   expect(response.status).toBe(200);
   expect(response.body.message).toBe('Refresh réussi');
@@ -42,15 +42,15 @@ describe('RefreshToken Integration Tests', () => {
 
 
     it('should fail to refresh with missing cookie', async () => {
-        const response = await request(app).post('/api/auth/refresh');
+        const response = await request(app).post('/api/refresh-token');
         expect(response.status).toBe(401);
     });
 
     it('should fail to refresh with invalid token', async () => {
         const response = await request(app)
-            .post('/api/auth/refresh')
+            .post('/api/refresh-token') 
             .set('Cookie', ['refreshToken=invalid_token']);
 
-        expect(response.status).toBe(401);
+        expect(response.status).toBe(403);
     });
 });

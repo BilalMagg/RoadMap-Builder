@@ -11,8 +11,13 @@ userRouter.post('/signup', validationMiddleware(UserRequestDto), (req: Request, 
 
 userRouter.post('/login', validationMiddleware(LoginRequestDto), (req: Request, res: Response) => userController.login(req, res));
 
+userRouter.patch('/edit-profile',checkAuth,(req: Request, res: Response) => userController.EditProfil(req, res))
+
 userRouter.get('/profil', checkAuth, (req: Request, res: Response) => userController.getProfil(req, res));
+
 userRouter.post('/forgot-password', userController.forgotPassword.bind(userController));
+
 userRouter.post('/reset-password/:id/:token', userController.resetPassword.bind(userController));
+
 userRouter.post("/logout", userController.logout.bind(userController));
 userRouter.use(checkAuth);
