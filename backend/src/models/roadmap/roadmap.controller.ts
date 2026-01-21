@@ -138,5 +138,26 @@ export class RoadmapController {
       );
     }
   }
+   async patchRoadmapGraph(req:Request, res:Response) {
+  const userId:any = req.userId; // middleware auth
+  const roadmapId = req.params.id;
+  const { operations } = req.body;
+  try{
+  const result:any=await this.roadmapService.applyOperations(userId, roadmapId,operations);
+  return res.status(200).json(ApiResponse.success(result ,result.message));
+  
+  }catch(err:any){
+    let  status=500;
+    if (err.message === 'This user does not have any roadmap') status = 404;
+        if(err.message === 'Node not found') status=404;
+            return res.status(status).json(ApiResponse.error(err.message || "Internal server error"));
+  }
+   
+    
+ 
+
+  
+};
+
 }
 

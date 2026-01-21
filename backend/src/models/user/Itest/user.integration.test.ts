@@ -181,6 +181,85 @@ describe('POST /api/auth/logout', () => {
         expect(response.body.message).toBe('Logout successful');
     });
 });
+let authCookie: string;
+
+beforeAll(async () => {
+    const email = 'editprofile_' + Date.now() + '@test.com';
+
+    // Créer l'utilisateur
+    await request(app).post('/api/auth/signup').send({
+        username: 'editprofile_user_' + Date.now(),
+        email: email,
+        password: 'password123',
+        firstName: 'Edit',
+        lastName: 'Profile',
+        age: 25
+    });
+
+    // Login pour récupérer le cookie
+    const loginRes = await request(app)
+        .post('/api/auth/login')
+        .send({ email, password: 'password123' });
+
+    const rawCookie = loginRes.get('Set-Cookie')!.find(c => c.startsWith('accessToken='))!;
+    authCookie = rawCookie.split(';')[0];
+    
+    it('should update user profile successfully', async () => {
+    const response = await request(app)
+        .put('/api/auth/edit-profile') // ton endpoint
+        .set('Cookie', [authCookie])
+        .send({ firstName: 'Ali', lastName: 'Smith' });
+
+    expect(response.status).toBe(200);
+    expect(response.body.success).toBe(true);
+    expect(response.body.data.userUpdate.firstName).toBe('Ali');
+    expect(response.body.data.userUpdate.lastName).toBe('Smith');
+});
+it('should return 404 if user not found', async () => {
+    const fakeToken = 'Bearer fakeToken';
+    const response = await request(app)
+      .put('/api/auth/edit-profile')
+      .set('Cookie', [`accessToken=${fakeToken}`])
+      .send({ firstName: 'Ali' });
+
+    expect(response.status).toBe(404);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe('user not found');
+  });
+ it('should return 400 if updates is empty', async () => {
+    const response = await request(app)
+      .put('/api/auth/edit-profile')
+      .set('Cookie', [authCookie])
+      .send({}); // updates vide
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe('no data provided to update');
+  });
+
+  it('should return 400 if no valid field is provided', async () => {
+    const response = await request(app)
+      .put('/api/auth/edit-profile')
+      .set('Cookie', [authCookie])
+      .send({ invalidField: 'value' });
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe('no valid field to update');
+  });
+ it('should return 400 if field value is null', async () => {
+    const response = await request(app)
+      .put('/api/auth/edit-profile')
+      .set('Cookie', [authCookie])
+      .send({ firstName: null });
+
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe('value of firstName is null');
+  });
+
+});
+
 
 
 });

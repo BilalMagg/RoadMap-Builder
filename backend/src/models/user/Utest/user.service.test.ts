@@ -182,4 +182,73 @@ describe('UserService Unit Tests', () => {
       expect(mockUserRepository.save).toHaveBeenCalled();
     });
   });
+
+describe('EditProfil', () => {
+ 
+
+  it('should throw an error if user not found', async () => {
+    // simulate user not found
+    mockUserRepository.findById.mockResolvedValue(null);
+
+    await expect(userService.EditProfil({ firstName: 'John' }, '123'))
+      .rejects
+      .toThrow('user not found');
+  });
+
+ it('should update user profile correctly', async () => {
+    const user:any = { firstName: 'Old', lastName: 'Name', age: 25 };
+
+    mockUserRepository.findById.mockResolvedValue(user);
+    mockUserRepository.save.mockResolvedValue(user);
+
+    const updates = { firstName: 'New', age: 30 };
+
+    const result = await userService.EditProfil(updates, '1');
+
+    // 🔹 Vérification des modifications
+    expect(user.firstName).toBe('New');
+    expect(user.age).toBe(30);
+    expect(user.lastName).toBe('Name'); // inchangé
+
+    // 🔹 Vérifier que save reçoit le user MODIFIÉ
+    expect(mockUserRepository.save).toHaveBeenCalledWith(user);
+
+  });
+    it('should throw error when field value is null', async () => {
+    const user:any = { firstName: 'Old', lastName: 'Name' };
+
+    mockUserRepository.findById.mockResolvedValue(user);
+
+    const updates = { lastName: null };
+
+    await expect(
+      userService.EditProfil(updates, '1')
+    ).rejects.toThrow('value of lastName is null');
+
+    // save ne doit PAS être appelé
+    expect(mockUserRepository.save).not.toHaveBeenCalled();
+  });
+  it('should throw error when no valid field is provided', async () => {
+    const user:any = { firstName: 'Old', lastName: 'Name' };
+
+    mockUserRepository.findById.mockResolvedValue(user);
+
+    const updates = { role: 'ADMIN' }; // champ interdit
+
+    await expect(
+      userService.EditProfil(updates, '1')
+    ).rejects.toThrow('no valid field to update');
+
+    expect(mockUserRepository.save).not.toHaveBeenCalled();
+  });
+it('should throw error when updates is empty', async () => {
+  
+  await expect(
+    userService.EditProfil({}, '1')
+  ).rejects.toThrow('no data provided to update');
+  expect(mockUserRepository.save).not.toHaveBeenCalled();
+
+});
+});
+
 });

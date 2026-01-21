@@ -1,11 +1,13 @@
 import { UserController } from '../user.controller';
 import { Request, Response } from 'express';
+import { ApiResponse } from '../../../utils/api/api.response';
+
 
 describe('UserController Unit Tests', () => {
   let userController: UserController;
   let mockUserService: any;
   let mockRequest: Partial<Request>;
-  let mockResponse: Partial<Response>;
+  let mockResponse:any;
   let jsonSpy: jest.Mock;
   let statusSpy: jest.Mock;
   let cookieSpy: jest.Mock;
@@ -16,7 +18,9 @@ describe('UserController Unit Tests', () => {
       login: jest.fn(),
       getProfil: jest.fn(),
       forgotPassword: jest.fn(),
-      resetPassword: jest.fn()
+      resetPassword: jest.fn(),
+      EditProfil: jest.fn()
+
     };
 
     userController = new UserController(mockUserService);
@@ -184,4 +188,33 @@ describe('UserController Unit Tests', () => {
       }));
     });
   });
+describe('UserController - EditProfil', () => {
+
+  it('should return 200 and success response when update succeeds', async () => {
+    const updatedUser = { firstName: 'Ali', lastName: 'Smith' };
+    mockUserService.EditProfil.mockResolvedValue(updatedUser);
+
+    const mockReq:any = { body: { firstName: 'Ali' }, userId: '123' };
+
+    await userController.EditProfil(mockReq, mockResponse);
+    const ResponseJson=ApiResponse.success(updatedUser, "Profil change successfully")
+
+    expect(mockUserService.EditProfil).toHaveBeenCalledWith(mockReq.body, mockReq.userId);
+    expect(mockResponse.status).toHaveBeenCalledWith(200);
+    expect(ResponseJson.success).toBe(true);
+    expect(ResponseJson.message).toBe("Profil change successfully");
+    expect(ResponseJson.data).toEqual(updatedUser);
+    expect(ResponseJson.error).toBeNull();
+// timestamp n’existe pas en test → on n’a rien à vérifier
+expect(ResponseJson.timestamp).toBeUndefined();
+  });
+
+
+
+
+
+
+
+});
+
 });

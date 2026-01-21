@@ -26,4 +26,5 @@ export class UserRepository implements IUserRepository {
           async findByUsername(username: string): Promise<UserEntity | null> {
               return await this.repository.findOne({where:{username}});
           }
+        
 }

@@ -1,7 +1,8 @@
 import { IDatabaseConfig } from "./database.interface";
 import { PostgresConfig } from "./postgres/postgres.config";
 import { PostgresTestConfig } from "./postgres/postgres.test.config";
-
+import dotenv from 'dotenv';
+dotenv.config(); 
 
 export class DatabaseFactory {
   static getDevConfiguration(): IDatabaseConfig {
