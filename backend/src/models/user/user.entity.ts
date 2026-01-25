@@ -14,6 +14,7 @@ import {
   IsUrl,
 } from "class-validator";
 import { RefreshTokenEntity } from "../refreshToken/refreshToken.entity";
+import { RoadmapProgressEntity } from "../roadmap_progress/roadmap_progress.entity";
 
 @Entity("users")
 export class UserEntity {
@@ -57,6 +58,9 @@ export class UserEntity {
 
   @OneToMany(() => RefreshTokenEntity, (token) => token.user)
   refreshTokens!: RefreshTokenEntity[];
+  
+  @OneToMany(() => RoadmapProgressEntity, (progress) => progress.user)
+  progress!: RoadmapProgressEntity[];
 
   @UpdateDateColumn()
   updatedAt!: Date;
