@@ -115,6 +115,33 @@ describe('RoadmapController (Unit Tests)', () => {
       });
   });
 
+  describe('getFeed', () => {
+      it('should return paginated feed', async () => {
+          req.query = { page: '1' };
+          const mockFeed = { items: [], total: 0 };
+          mockRoadmapService.getFeed.mockResolvedValue(mockFeed);
+
+          await controller.getFeed(req as Request, res as Response);
+
+          expect(mockRoadmapService.getFeed).toHaveBeenCalledWith(req.query);
+          expect(statusMock).toHaveBeenCalledWith(200);
+          expect(jsonMock).toHaveBeenCalledWith(expect.objectContaining({ data: mockFeed }));
+      });
+  });
+
+  describe('getCategories', () => {
+      it('should return categories', async () => {
+          const mockCategories = [{ key: 'C', value: 'Cat' }];
+          mockRoadmapService.getCategories.mockResolvedValue(mockCategories);
+
+          await controller.getCategories(req as Request, res as Response);
+
+          expect(mockRoadmapService.getCategories).toHaveBeenCalled();
+          expect(statusMock).toHaveBeenCalledWith(200);
+          expect(jsonMock).toHaveBeenCalledWith(expect.objectContaining({ data: mockCategories }));
+      });
+  });
+
   describe('updateRoadmap', () => {
       it('should update roadmap successfully', async () => {
           req.params = { id: 'r1' };
