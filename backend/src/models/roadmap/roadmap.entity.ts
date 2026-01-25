@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from "typeorm";
 import {
   IsString,
@@ -14,6 +15,7 @@ import {
   IsObject,
 } from "class-validator";
 import { UserEntity } from "../user/user.entity";
+import { RoadmapProgressEntity } from "../roadmap_progress/roadmap_progress.entity";
 
 // TypeScript interfaces for roadmap data structure
 export interface RoadmapNodeData {
@@ -79,6 +81,9 @@ export class RoadmapEntity {
   @Column({ type: "jsonb" })
   @IsObject({ message: "Data must be a valid object" })
   data!: RoadmapData;
+
+  @OneToMany(() => RoadmapProgressEntity, (progress) => progress.roadmap)
+  progress!: RoadmapProgressEntity[];
 
   @ManyToOne(() => UserEntity, { onDelete: "CASCADE" })
   @JoinColumn({ name: "userId" })

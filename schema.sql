@@ -43,7 +43,7 @@ CREATE TABLE "roadmap_progress" (
   "user_id" integer,
   "roadmap_id" integer,
   "status" progress_status DEFAULT 'STARTED',
-  "node_states" jsonb DEFAULT '{}',
+  "nodeStates" jsonb DEFAULT '{}',
   "started_at" timestamp DEFAULT (now()),
   "last_updated" timestamp DEFAULT (now())
 );

@@ -1,12 +1,28 @@
 import { api } from "./axios";
 
 export const setupInterceptors = () => {
+  api.interceptors.request.use(
+  (config) => {
+    console.log(`[${new Date().toISOString()}] Request:`, {
+      url: config.url,
+      method: config.method,
+      baseURL: config.baseURL,
+      headers: config.headers
+    });
+    return config;
+  },
+  (error) => {
+    console.error(`[${new Date().toISOString()}] Request error:`, error);
+    return Promise.reject(error);
+  }
+);
   api.interceptors.response.use(
     (res) => res,
     async (error) => {
       console.log("start")
       const originalRequest = error.config;
       const code = error.response?.data?.error?.code;
+      console.log(code)
       const message = error.response?.data?.message;
 
       // Handle 401 errors (unauthorized) - try to refresh token
