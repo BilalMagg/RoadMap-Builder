@@ -1,46 +1,42 @@
-import { Request, Response } from "express";
-import { RefreshTokenService } from "./refreshToken.service";
+import { Request, Response } from 'express';
+import { RefreshTokenService } from './refreshToken.service';
 
 export class RefreshTokenController {
   constructor(private refreshTokenService: RefreshTokenService) {}
 
-
   async refresh(req: Request, res: Response) {
-    console.log("Cookies reçus :", req.cookies);
+    console.log('Cookies reçus :', req.cookies);
     const incomingToken = req.cookies.refreshToken;
 
     if (!incomingToken) {
-      return res.status(401).json({ message: "Non authentifié" });
+      return res.status(401).json({ message: 'Non authentifié' });
     }
 
     try {
-      
-      const { accessToken, refreshToken } = await this.refreshTokenService.rotateRefreshToken(incomingToken);
+      const { accessToken, refreshToken } =
+        await this.refreshTokenService.rotateRefreshToken(incomingToken);
 
-      res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,  
-      secure: process.env.NODE_ENV === "production", 
-      sameSite: "strict", 
-      maxAge: 2 * 60 * 1000, 
-      path: "/" 
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 2 * 60 * 1000,
+        path: '/',
       });
 
-
-      res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 10 * 1000,
-      path: "/"
+      res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 10 * 1000,
+        path: '/',
       });
-       return res.status(200).json({ message: "Refresh réussi" });
-
+      return res.status(200).json({ message: 'Refresh réussi' });
     } catch (error) {
-      
-      res.clearCookie("refreshToken");
-      return res.status(403).json({ 
-        message: "Session invalide ou expirée", 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      res.clearCookie('refreshToken');
+      return res.status(403).json({
+        message: 'Session invalide ou expirée',
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   }

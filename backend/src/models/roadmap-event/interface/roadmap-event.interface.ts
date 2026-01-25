@@ -1,5 +1,7 @@
-import { RoadmapEventEntity } from "../roadmap-event.entity";
+import { RoadmapEventEntity } from '../roadmap-event.entity';
 
 export interface IRoadmapEventRepository {
-    insertEvent(eventData: Partial<RoadmapEventEntity>): Promise<RoadmapEventEntity>;
+  insertEvent(
+    eventData: Partial<RoadmapEventEntity>,
+  ): Promise<RoadmapEventEntity>;
 }

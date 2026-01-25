@@ -5,51 +5,49 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
-} from "typeorm";
+} from 'typeorm';
 import {
   IsEmail,
   IsNotEmpty,
   IsString,
   IsOptional,
   IsUrl,
-} from "class-validator";
-import { RefreshTokenEntity } from "../refreshToken/refreshToken.entity";
+} from 'class-validator';
+import { RefreshTokenEntity } from '../refreshToken/refreshToken.entity';
 
-@Entity("users")
+@Entity('users')
 export class UserEntity {
-  
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ type: "varchar", length: 50 ,default: "Unknown"})
+  @Column({ type: 'varchar', length: 50, default: 'Unknown' })
   firstName!: string;
 
-  @Column({ type: "varchar", length: 50 ,default: "Unknown"})
+  @Column({ type: 'varchar', length: 50, default: 'Unknown' })
   lastName!: string;
 
-  @Column({ type: "int", nullable: true })
+  @Column({ type: 'int', nullable: true })
   age?: number;
 
-
-  @Column({ type: "boolean", default: true })
+  @Column({ type: 'boolean', default: true })
   isActive!: boolean;
 
-  @Column({ type: "varchar", length: 50, unique: true })
-  @IsString({ message: "Username must be a string" })
-  @IsNotEmpty({ message: "Username is required" })
+  @Column({ type: 'varchar', length: 50, unique: true })
+  @IsString({ message: 'Username must be a string' })
+  @IsNotEmpty({ message: 'Username is required' })
   username!: string;
 
-  @Column({ type: "varchar", length: 100, unique: true })
-  @IsEmail({}, { message: "Invalid email format" })
-  @IsNotEmpty({ message: "Email is required" })
-  email!: string; 
+  @Column({ type: 'varchar', length: 100, unique: true })
+  @IsEmail({}, { message: 'Invalid email format' })
+  @IsNotEmpty({ message: 'Email is required' })
+  email!: string;
 
-  @Column({ type: "varchar", length: 255 })
+  @Column({ type: 'varchar', length: 255 })
   password!: string;
 
-  @Column({ type: "varchar", length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   @IsOptional()
-  @IsUrl({}, { message: "Avatar must be a valid URL" })
+  @IsUrl({}, { message: 'Avatar must be a valid URL' })
   avatar!: string;
 
   @CreateDateColumn()
