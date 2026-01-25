@@ -114,9 +114,7 @@ export default function EditProfile() {
         }
       }
 
-      // TODO: Update this endpoint when backend update route is created
-      // Expected: PUT or PATCH /auth/profil
-      const response = await api.put<ApiResponse<{ user: ProfileData }>>("/auth/profil", updateData);
+      const response = await api.patch<ApiResponse<{ user: ProfileData }>>("/auth/edit-profile", updateData);
 
       if (response.data.success) {
         setSuccess("Profile updated successfully!");
