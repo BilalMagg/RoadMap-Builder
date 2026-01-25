@@ -1,13 +1,13 @@
-import { 
-  IsEmail, 
-  IsNotEmpty, 
-  IsString, 
-  MinLength, 
-  IsOptional, 
-  IsBoolean, 
-  IsUrl, 
-  IsInt, 
-  Min 
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  MinLength,
+  IsOptional,
+  IsBoolean,
+  IsUrl,
+  IsInt,
+  Min,
 } from 'class-validator';
 import { UserEntity } from './user.entity';
 
@@ -60,12 +60,12 @@ export class UserResponseDto {
     dto.email = entity.email;
     dto.firstName = entity.firstName;
     dto.lastName = entity.lastName;
-    dto.age = entity.age ?? null; 
+    dto.age = entity.age ?? null;
     dto.isActive = entity.isActive;
     dto.avatar = entity.avatar || null;
     dto.createdAt = entity.createdAt;
     dto.updatedAt = entity.updatedAt;
-    
+
     return dto;
   }
 }
@@ -79,8 +79,8 @@ export class LoginRequestDto {
   password!: string;
 
   @IsOptional()
-  @IsBoolean({ message: "La valeur doit être un booléen" })
-  rememberMe?: boolean = false; 
+  @IsBoolean({ message: 'La valeur doit être un booléen' })
+  rememberMe?: boolean = false;
 }
 
 export class UserProfilResponse {
@@ -98,7 +98,10 @@ export class UserProfilResponse {
     following: number;
   };
 
-  static fromEntity(entity: UserEntity, stats?: { roadmaps: number }): UserProfilResponse {
+  static fromEntity(
+    entity: UserEntity,
+    stats?: { roadmaps: number },
+  ): UserProfilResponse {
     const dto = new UserProfilResponse();
     dto.id = entity.id;
     dto.username = entity.username;
@@ -108,15 +111,15 @@ export class UserProfilResponse {
     dto.age = entity.age ?? null;
     dto.avatar = entity.avatar || null;
     dto.isActive = entity.isActive;
-    
+
     if (stats) {
       dto.stats = {
         roadmaps: stats.roadmaps,
         followers: 0, // Placeholder
-        following: 0  // Placeholder
+        following: 0, // Placeholder
       };
     }
-    
+
     return dto;
   }
 }

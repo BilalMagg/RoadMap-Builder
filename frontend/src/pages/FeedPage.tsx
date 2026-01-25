@@ -8,16 +8,37 @@ import { api } from "../services/http";
 import { toast } from "sonner";
 
 
-const CATEGORIES = ["All", "Learning", "Business", "Design", "Programming", "Career", "Entrepreneurship"];
+// Categories will be fetched from the backend
+interface Category {
+    key: string;
+    value: string;
+}
+
 
 export const FeedPage = () => {
     const queryClient = useQueryClient();
     const [search, setSearch] = useState("");
     const [sort, setSort] = useState<"recent" | "popular">("recent");
     const [activeCategory, setActiveCategory] = useState("All");
+    const [categories, setCategories] = useState<Category[]>([]);
     const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
     const loadMoreRef = useRef(null);
     const isInView = useInView(loadMoreRef);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await api.get("/roadmaps/categories");
+                if (res.data.success) {
+                    setCategories(res.data.data);
+                }
+            } catch (err) {
+                console.error("Failed to fetch categories", err);
+            }
+        };
+        fetchCategories();
+    }, []);
+
 
     const {
         data,
@@ -31,23 +52,24 @@ export const FeedPage = () => {
         queryFn: async ({ pageParam = 1 }) => {
             const res = await api.get(`/roadmaps/feed`, {
                 params: {
-                    sort,
+                    sortBy: sort === "popular" ? "likes" : "createdAt", // Assuming 'likes' exists or just 'createdAt'
                     page: pageParam,
                     limit: 12,
                     search: search || undefined,
                     category: activeCategory !== "All" ? activeCategory : undefined
                 }
             });
-            // Adapt to API response structure depending on if it returns { data, meta } or just []
-            // Assuming existing API might need tweaks so handling safe check:
-            const items = Array.isArray(res.data) ? res.data : (res.data.data || []);
-            return items as RoadmapFeedItem[];
+            
+            // Backend returns { success: true, data: { items: [], total: 0 } }
+            const responseData = res.data.data;
+            return (responseData?.items || []) as RoadmapFeedItem[];
         },
         getNextPageParam: (lastPage, allPages) => {
             if (!lastPage || lastPage.length < 12) return undefined;
             return allPages.length + 1;
         },
         initialPageParam: 1,
+
     });
 
     useEffect(() => {
@@ -135,54 +157,72 @@ export const FeedPage = () => {
                     transition={{ delay: 0.4 }}
                     className="mb-10 rounded-2xl bg-white/80 p-4 shadow-xl backdrop-blur-xl ring-1 ring-slate-900/5 dark:bg-slate-900/80 dark:ring-white/10"
                 >
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-                        <div className="relative flex-1">
+                    <div className="flex flex-col gap-6">
+                        {/* Top Row: Search */}
+                        <div className="relative">
                             <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
                             <input
                                 type="text"
                                 placeholder="Search roadmaps, authors, topics..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-12 pr-4 text-slate-900 shadow-sm transition-all focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                                className="w-full rounded-xl border border-slate-200 bg-white/50 py-3.5 pl-12 pr-4 text-slate-900 shadow-sm transition-all focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white"
                             />
                         </div>
 
-                        <div className="flex items-center justify-between gap-4 border-t border-slate-200 pt-4 lg:border-t-0 lg:pt-0 dark:border-slate-800">
-                            <div className="flex gap-2 overflow-x-auto no-scrollbar">
-                                {CATEGORIES.map((cat) => (
+                        {/* Bottom Row: Categories & Sort */}
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="relative flex-1 overflow-hidden">
+                                {/* Left/Right Fade Indicators */}
+                                <div className="absolute left-0 top-0 bottom-0 z-10 w-8 bg-gradient-to-r from-white/80 to-transparent pointer-events-none dark:from-slate-900/80" />
+                                <div className="absolute right-0 top-0 bottom-0 z-10 w-8 bg-gradient-to-l from-white/80 to-transparent pointer-events-none dark:from-slate-900/80" />
+                                
+                                <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 px-4">
                                     <button
-                                        key={cat}
-                                        onClick={() => setActiveCategory(cat)}
-                                        className={`whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-all ${activeCategory === cat
+                                        onClick={() => setActiveCategory("All")}
+                                        className={`whitespace-nowrap rounded-lg px-4 py-2 text-sm font-semibold transition-all ${activeCategory === "All"
                                             ? "bg-slate-900 text-white shadow-lg shadow-slate-900/20 dark:bg-white dark:text-slate-900"
-                                            : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700"
+                                            : "bg-white text-slate-600 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 shadow-sm"
                                             }`}
                                     >
-                                        {cat}
+                                        All Roadmaps
                                     </button>
-                                ))}
+                                    {categories.map((cat) => (
+                                        <button
+                                            key={cat.key}
+                                            onClick={() => setActiveCategory(cat.value)}
+                                            className={`whitespace-nowrap rounded-lg px-4 py-2 text-sm font-semibold transition-all ${activeCategory === cat.value
+                                                ? "bg-slate-900 text-white shadow-lg shadow-slate-900/20 dark:bg-white dark:text-slate-900"
+                                                : "bg-white text-slate-600 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 shadow-sm"
+                                                }`}
+                                        >
+                                            {cat.value}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
 
-                            <div className="h-8 w-px bg-slate-200 dark:bg-slate-800 hidden lg:block" />
-
-                            <div className="flex bg-slate-100 p-1 rounded-lg dark:bg-slate-800">
-                                <button
-                                    onClick={() => setSort("recent")}
-                                    className={`p-2 rounded-md transition-all ${sort === "recent" ? "bg-white shadow-sm dark:bg-slate-700 text-slate-900 dark:text-white" : "text-slate-400 hover:text-slate-600"}`}
-                                    title="Recent"
-                                >
-                                    <Clock className="w-5 h-5" />
-                                </button>
-                                <button
-                                    onClick={() => setSort("popular")}
-                                    className={`p-2 rounded-md transition-all ${sort === "popular" ? "bg-white shadow-sm dark:bg-slate-700 text-slate-900 dark:text-white" : "text-slate-400 hover:text-slate-600"}`}
-                                    title="Popular"
-                                >
-                                    <TrendingUp className="w-5 h-5" />
-                                </button>
+                            <div className="flex items-center gap-4 border-t border-slate-200 pt-4 sm:border-t-0 sm:pt-0 sm:pl-4 sm:border-l dark:border-slate-800">
+                                <div className="flex bg-slate-100/50 p-1 rounded-lg dark:bg-slate-800/50">
+                                    <button
+                                        onClick={() => setSort("recent")}
+                                        className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${sort === "recent" ? "bg-white shadow-sm dark:bg-slate-700 text-slate-900 dark:text-white" : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"}`}
+                                    >
+                                        <Clock className="w-4 h-4" />
+                                        <span>New</span>
+                                    </button>
+                                    <button
+                                        onClick={() => setSort("popular")}
+                                        className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-all ${sort === "popular" ? "bg-white shadow-sm dark:bg-slate-700 text-slate-900 dark:text-white" : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"}`}
+                                    >
+                                        <TrendingUp className="w-4 h-4" />
+                                        <span>Popular</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
+
                 </motion.div>
 
                 {/* Grid */}

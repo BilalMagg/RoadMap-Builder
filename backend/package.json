@@ -9,7 +9,8 @@
     "start": "node dist/server.js",
     "test": "cross-env NODE_ENV=test jest --runInBand --detectOpenHandles --verbose --testPathIgnorePatterns=Itest",
     "test:watch": "jest --watchAll",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -45,6 +46,7 @@
     "@types/supertest": "^6.0.3",
     "cross-env": "^10.1.0",
     "jest": "^30.2.0",
+    "prettier": "^3.8.0",
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.6",
     "ts-node-dev": "^2.0.0",

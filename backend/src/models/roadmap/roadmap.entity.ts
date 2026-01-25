@@ -7,15 +7,11 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
-} from "typeorm";
-import {
-  IsString,
-  IsNotEmpty,
-  IsOptional,
-  IsObject,
-} from "class-validator";
-import { UserEntity } from "../user/user.entity";
+} from 'typeorm';
 import { RoadmapProgressEntity } from "../roadmap_progress/roadmap_progress.entity";
+import { IsString, IsNotEmpty, IsOptional, IsObject } from 'class-validator';
+import { UserEntity } from '../user/user.entity';
+import { RoadmapCategory } from './enum/roadmap.enum';
 
 // TypeScript interfaces for roadmap data structure
 export interface RoadmapNodeData {
@@ -54,32 +50,40 @@ export interface RoadmapData {
   edges: RoadmapEdge[];
 }
 
-@Entity("roadmaps")
+@Entity('roadmaps')
 export class RoadmapEntity {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ type: "varchar", length: 255 })
-  @IsString({ message: "Title must be a string" })
-  @IsNotEmpty({ message: "Title is required" })
+  @Column({ type: 'varchar', length: 255 })
+  @IsString({ message: 'Title must be a string' })
+  @IsNotEmpty({ message: 'Title is required' })
   title!: string;
 
-  @Column({ type: "text", nullable: true })
+  @Column({ type: 'text', nullable: true })
   @IsOptional()
-  @IsString({ message: "Description must be a string" })
+  @IsString({ message: 'Description must be a string' })
   description?: string;
 
-  @Column({ 
-    type: "enum", 
-    enum: ["DRAFT", "PUBLISHED", "ARCHIVED"],
-    default: "DRAFT"
+  @Column({
+    type: 'enum',
+    enum: ['DRAFT', 'PUBLISHED', 'ARCHIVED'],
+    default: 'DRAFT',
   })
   @IsOptional()
-  @IsString({ message: "Status must be a string" })
-  status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+  @IsString({ message: 'Status must be a string' })
+  status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
 
-  @Column({ type: "jsonb" })
-  @IsObject({ message: "Data must be a valid object" })
+  @Column({
+    type: 'enum',
+    enum: RoadmapCategory,
+    default: RoadmapCategory.FULLSTACK,
+  })
+  @IsNotEmpty({ message: 'Category is required' })
+  category!: RoadmapCategory;
+
+  @Column({ type: 'jsonb', default: {}, nullable: true })
+  @IsObject({ message: 'Data must be a valid object' })
   data!: RoadmapData;
 
   @OneToMany(() => RoadmapProgressEntity, (progress) => progress.roadmap)
@@ -89,7 +93,7 @@ export class RoadmapEntity {
   @JoinColumn({ name: "userId" })
   user!: UserEntity;
 
-  @Column({ type: "uuid" })
+  @Column({ type: 'uuid' })
   userId!: string;
 
   @CreateDateColumn()
@@ -98,4 +102,3 @@ export class RoadmapEntity {
   @UpdateDateColumn()
   updatedAt!: Date;
 }
-
