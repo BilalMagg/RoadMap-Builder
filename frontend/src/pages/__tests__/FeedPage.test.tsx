@@ -83,7 +83,28 @@ describe('FeedPage Integration', () => {
             }
         ];
 
-        (api.get as any).mockResolvedValue({ data: mockRoadmaps });
+        (api.get as any).mockImplementation((url: string) => {
+            if (url.includes('/roadmaps/categories')) {
+                return Promise.resolve({
+                    data: {
+                        success: true,
+                        data: [] 
+                    }
+                });
+            }
+            if (url.includes('/roadmaps/feed')) {
+                return Promise.resolve({
+                    data: {
+                        success: true,
+                        data: {
+                            items: mockRoadmaps,
+                            total: 1
+                        }
+                    }
+                });
+            }
+            return Promise.resolve({ data: {} });
+        });
 
         render(<FeedPage />, { wrapper: createWrapper() });
 
@@ -94,7 +115,25 @@ describe('FeedPage Integration', () => {
     });
 
     it('shows empty state when no roadmaps returned', async () => {
-        (api.get as any).mockResolvedValue({ data: [] });
+        (api.get as any).mockImplementation((url: string) => {
+            if (url.includes('/roadmaps/categories')) {
+                return Promise.resolve({
+                    data: {
+                        success: true,
+                        data: [] 
+                    }
+                });
+            }
+            return Promise.resolve({
+                data: {
+                    success: true,
+                    data: {
+                        items: [],
+                        total: 0
+                    }
+                }
+            });
+        });
 
         render(<FeedPage />, { wrapper: createWrapper() });
 
@@ -104,7 +143,25 @@ describe('FeedPage Integration', () => {
     });
 
     it('updates search query when typing', async () => {
-        (api.get as any).mockResolvedValue({ data: [] });
+        (api.get as any).mockImplementation((url: string) => {
+            if (url.includes('/roadmaps/categories')) {
+                return Promise.resolve({
+                    data: {
+                        success: true,
+                        data: [] 
+                    }
+                });
+            }
+            return Promise.resolve({
+                data: {
+                    success: true,
+                    data: {
+                        items: [],
+                        total: 0
+                    }
+                }
+            });
+        });
         render(<FeedPage />, { wrapper: createWrapper() });
 
         const searchInput = screen.getByPlaceholderText('Search roadmaps, authors, topics...');
