@@ -12,7 +12,7 @@ interface PublishRoadmapModalProps {
 interface RoadmapSummary {
     id: string;
     title: string;
-    isPublic?: boolean;
+    status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
 }
 
 export const PublishRoadmapModal = ({ isOpen, onClose }: PublishRoadmapModalProps) => {
@@ -45,7 +45,7 @@ export const PublishRoadmapModal = ({ isOpen, onClose }: PublishRoadmapModalProp
         setIsPublishing(true);
         try {
             // Mock API call - in a real app, this would toggle the public status
-            await RoadmapApi.updateRoadmap(selectedId, { isPublic: true });
+            await RoadmapApi.updateRoadmap(selectedId, { status: 'PUBLISHED' });
 
             toast.success("Roadmap published to feed successfully!");
             onClose();
@@ -126,7 +126,7 @@ export const PublishRoadmapModal = ({ isOpen, onClose }: PublishRoadmapModalProp
                                                 {map.title}
                                             </h4>
                                             <div className="flex items-center gap-2 text-xs text-slate-500">
-                                                {map.isPublic ? (
+                                                {map.status === 'PUBLISHED' ? (
                                                     <span className="flex items-center gap-1 text-emerald-600">
                                                         <Globe className="h-3 w-3" /> Published
                                                     </span>

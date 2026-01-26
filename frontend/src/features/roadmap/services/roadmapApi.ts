@@ -19,7 +19,7 @@ interface UpdateRoadmapDto {
   title?: string;
   description?: string;
   data?: RoadmapData;
-  isPublic?: boolean;
+  status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
 }
 
 interface RoadmapListItem {
@@ -31,6 +31,7 @@ interface RoadmapListItem {
   updatedAt: Date;
   nodeCount: number;
   edgeCount: number;
+  status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
 }
 
 export class RoadmapApi {
