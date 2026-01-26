@@ -1,7 +1,10 @@
 import { DataSource } from 'typeorm';
 import { IDatabaseConfig } from '../database.interface';
 import { UserEntity } from '../../models/user/user.entity';
+import { RefreshTokenEntity } from '../../models/refreshToken/refreshToken.entity';
 import { RoadmapEntity } from '../../models/roadmap/roadmap.entity';
+import { RoadmapEventEntity } from '../../models/roadmap-event/roadmap-event.entity';
+import { RoadmapProgressEntity } from '../../models/roadmap_progress/roadmap_progress.entity';
 
 export const prodDataSource = new DataSource({
   type: 'postgres',
@@ -12,7 +15,7 @@ export const prodDataSource = new DataSource({
   database: process.env.DB_PROD_NAME,
   synchronize: true,
   dropSchema: true,
-  entities: [UserEntity, RoadmapEntity],
+  entities: [UserEntity, RefreshTokenEntity, RoadmapEntity, RoadmapEventEntity, RoadmapProgressEntity],
 });
 
 export class PostgresProdConfig implements IDatabaseConfig {
