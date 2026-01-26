@@ -15,6 +15,20 @@ vi.mock('../../services/http', () => ({
     }
 }));
 
+// Mock AuthContext
+vi.mock('../../context/AuthContext', () => ({
+    useAuth: () => ({
+        isAuthenticated: true,
+        user: { id: 'test-user', username: 'Test User' },
+        login: vi.fn(),
+        signup: vi.fn(),
+        logout: vi.fn(),
+        isLoading: false,
+        error: null
+    }),
+    AuthProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>
+}));
+
 // Mock Lucide icons
 vi.mock('lucide-react', () => ({
     Search: () => <div data-testid="icon-search" />,
@@ -30,6 +44,7 @@ vi.mock('lucide-react', () => ({
     X: () => <div data-testid="icon-x" />,
     Check: () => <div data-testid="icon-check" />,
     Globe: () => <div data-testid="icon-globe" />,
+    Menu: () => <div data-testid="icon-menu" />,
     Lock: () => <div data-testid="icon-lock" />,
 }));
 
