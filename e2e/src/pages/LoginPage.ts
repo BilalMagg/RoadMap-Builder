@@ -4,7 +4,7 @@ export class LoginPage {
   private passwordInput = 'input[type="password"]';
   private rememberMeCheckbox = 'input[type="checkbox"]#remember';
   private submitButton = 'button[type="submit"]';
-  private errorMessage = '[class*="authError"]';
+  private errorMessage = '[data-cy="auth-error"]';
   private signupLink = 'a[href="/signup"]';
 
   visit() {

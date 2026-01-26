@@ -1,7 +1,7 @@
 export class RoadmapListPage {
   // Selectors - Updated for CSS modules
-  private createButton = 'button:contains("Create")';
-  private roadmapCard = '[class*="roadmapCard"]';
+  private createButton = '[data-cy="create-roadmap-button"]';
+  private roadmapCard = '[data-cy="roadmap-card"]';
   private deleteButton = 'button[title="Delete roadmap"]';
 
   visit() {
@@ -10,14 +10,28 @@ export class RoadmapListPage {
   }
 
   clickCreateRoadmap() {
-    // Creates directly with default title "New Roadmap"
-    cy.contains('button', /create.*roadmap/i).click();
+    cy.get(this.createButton).first().click();
     return this;
   }
 
-  createRoadmap() {
-    // No form - creates directly
+  createRoadmap(title: string = 'Integration Test Roadmap', category: string = 'Backend') {
     this.clickCreateRoadmap();
+    
+    // Wait for modal to be visible
+    cy.contains('h2', 'Create Roadmap').should('be.visible');
+    
+    // Fill Title
+    cy.get('input[name="title"]').type(title);
+    
+    // Select Category
+    // Open the select dropdown
+    cy.get('button[role="combobox"]').click();
+    // Select the option
+    cy.get('[role="option"]').contains(category).click();
+    
+    // Submit form
+    cy.contains('button', 'Launch Roadmap').click();
+    
     return this;
   }
 

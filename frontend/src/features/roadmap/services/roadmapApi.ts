@@ -1,5 +1,6 @@
 import { api } from '../../../services/http/axios';
-import type { Roadmap, RoadmapData, RoadmapNode, RoadmapEdge } from '../types/roadmap.types';
+import type { Roadmap, RoadmapData } from '../types/roadmap.types';
+import { RoadmapCategory } from '../types/roadmap.types';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -12,6 +13,7 @@ interface ApiResponse<T> {
 interface CreateRoadmapDto {
   title: string;
   description?: string;
+  category: RoadmapCategory;
   data?: RoadmapData;
 }
 
@@ -19,7 +21,7 @@ interface UpdateRoadmapDto {
   title?: string;
   description?: string;
   data?: RoadmapData;
-  isPublic?: boolean;
+  status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
 }
 
 interface RoadmapListItem {
@@ -31,6 +33,7 @@ interface RoadmapListItem {
   updatedAt: Date;
   nodeCount: number;
   edgeCount: number;
+  status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
 }
 
 export class RoadmapApi {
@@ -49,6 +52,24 @@ export class RoadmapApi {
     } catch (error: any) {
       console.error('Error fetching roadmaps:', error);
       throw new Error(error.response?.data?.message || 'Failed to fetch roadmaps');
+    }
+  }
+
+  // Get available categories
+  static async getCategories(): Promise<{ key: string; value: string }[]> {
+    try {
+        const response = await api.get<ApiResponse<{ key: string; value: string }[]>>('/roadmaps/categories');
+        if (response.data.success && response.data.data) {
+            return response.data.data;
+        }
+        throw new Error(response.data.message || 'Failed to fetch categories');
+    } catch (error: any) {
+        console.error('Error fetching categories:', error);
+        // Fallback to enum values if API fails or endpoint not ready
+        return Object.entries(RoadmapCategory).map(([key, value]) => ({
+            key,
+            value
+        }));
     }
   }
 
@@ -76,13 +97,15 @@ export class RoadmapApi {
   // Create a new roadmap
   static async createRoadmap(
     title: string,
-    description?: string,
+    description: string | undefined, // Changed to allow undefined specifically
+    category: RoadmapCategory,
     data?: RoadmapData
   ): Promise<Roadmap> {
     try {
       const payload: CreateRoadmapDto = {
         title,
         description,
+        category,
         data: data || {
           version: '1.0',
           viewport: { x: 0, y: 0, zoom: 1 },

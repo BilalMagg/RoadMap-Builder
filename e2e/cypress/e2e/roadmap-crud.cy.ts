@@ -27,13 +27,13 @@ describe('Roadmap CRUD Operations', () => {
     });
 
     it('should display created roadmaps', () => {
-      // Verify "New Roadmap" appears in the list
-      roadmapListPage.verifyRoadmapExists('New Roadmap');
+      // Verify "Integration Test Roadmap" appears in the list
+      roadmapListPage.verifyRoadmapExists('Integration Test Roadmap');
     });
 
     it('should navigate to canvas when clicking a roadmap', () => {
       roadmapListPage
-        .clickRoadmap('New Roadmap')
+        .clickRoadmap('Integration Test Roadmap')
         .verifyRedirectToCanvas();
     });
   });
@@ -50,7 +50,7 @@ describe('Roadmap CRUD Operations', () => {
       cy.get('[class*="roadmapCard"]').then($cards => {
         const initialCount = $cards.length;
         
-        roadmapListPage.deleteRoadmap('New Roadmap');
+        roadmapListPage.deleteRoadmap('Integration Test Roadmap');
 
         // Wait for deletion
         cy.wait(2000);

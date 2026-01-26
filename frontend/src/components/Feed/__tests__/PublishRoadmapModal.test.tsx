@@ -75,7 +75,7 @@ describe('PublishRoadmapModal', () => {
 
         // Expect updateRoadmap to be called
         await waitFor(() => {
-            expect(RoadmapApi.updateRoadmap).toHaveBeenCalledWith('1', { isPublic: true });
+            expect(RoadmapApi.updateRoadmap).toHaveBeenCalledWith('1', { status: "PUBLISHED" });
         });
 
         await waitFor(() => {

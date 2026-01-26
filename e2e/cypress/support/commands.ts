@@ -80,11 +80,25 @@ Cypress.Commands.add('logout', () => {
 });
 
 // Create roadmap command - NO FORM, creates directly
+// Create roadmap command - Handles modal form
 Cypress.Commands.add('createRoadmap', () => {
   cy.visit('/roadmaps');
   
-  // Click create new roadmap button (creates with default title "New Roadmap")
-  cy.contains('button', /create.*roadmap/i).click();
+  // Click create new roadmap button
+  cy.get('[data-cy="create-roadmap-button"]').first().click();
+  
+  // Wait for modal and fill form
+  cy.contains('h2', 'Create Roadmap').should('be.visible');
+  
+  // Fill Title
+  cy.get('input[name="title"]').type('Integration Test Roadmap');
+  
+  // Select Category (Backend)
+  cy.get('button[role="combobox"]').click();
+  cy.get('[role="option"]').contains('Backend').click();
+  
+  // Submit form
+  cy.contains('button', 'Launch Roadmap').click();
   
   // Wait for redirect to canvas
   cy.url().should('include', '/canvas', { timeout: 10000 });
