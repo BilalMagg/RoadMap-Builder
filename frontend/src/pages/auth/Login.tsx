@@ -101,7 +101,7 @@ export default function Login() {
           </div>
 
           {error && (
-            <div className="p-4 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm">
+            <div data-cy="auth-error" className="p-4 rounded-lg bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm">
               {error}
             </div>
           )}

@@ -1,7 +1,7 @@
 export class RoadmapListPage {
   // Selectors - Updated for CSS modules
-  private createButton = 'button:contains("Create")';
-  private roadmapCard = '[class*="roadmapCard"]';
+  private createButton = '[data-cy="create-roadmap-button"]';
+  private roadmapCard = '[data-cy="roadmap-card"]';
   private deleteButton = 'button[title="Delete roadmap"]';
 
   visit() {

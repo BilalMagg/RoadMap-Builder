@@ -84,7 +84,7 @@ Cypress.Commands.add('createRoadmap', () => {
   cy.visit('/roadmaps');
   
   // Click create new roadmap button (creates with default title "New Roadmap")
-  cy.contains('button', /create.*roadmap/i).click();
+  cy.get('[data-cy="create-roadmap-button"]').first().click();
   
   // Wait for redirect to canvas
   cy.url().should('include', '/canvas', { timeout: 10000 });

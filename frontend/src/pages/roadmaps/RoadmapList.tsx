@@ -110,7 +110,7 @@ export default function RoadmapList() {
               Create and manage your learning paths and workflows
             </p>
           </div>
-          <button onClick={handleCreateNew} className={styles.createButton}>
+          <button onClick={handleCreateNew} className={styles.createButton} data-cy="create-roadmap-button">
             <Plus style={{ width: "1.25rem", height: "1.25rem" }} />
             Create New Roadmap
           </button>
@@ -124,7 +124,7 @@ export default function RoadmapList() {
             <p className={styles.emptyDescription}>
               Get started by creating your first roadmap
             </p>
-            <button onClick={handleCreateNew} className={styles.createButton}>
+            <button onClick={handleCreateNew} className={styles.createButton} data-cy="create-roadmap-button">
               <Plus style={{ width: "1.25rem", height: "1.25rem" }} />
               Create Your First Roadmap
             </button>
@@ -136,6 +136,7 @@ export default function RoadmapList() {
                 key={roadmap.id}
                 className={styles.roadmapCard}
                 onClick={() => handleSelectRoadmap(roadmap.id)}
+                data-cy="roadmap-card"
               >
                 <div className={styles.cardHeader}>
                   <h3 className={styles.cardTitle}>{roadmap.title}</h3>
