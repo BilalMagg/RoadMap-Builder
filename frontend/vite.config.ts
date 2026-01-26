@@ -13,7 +13,7 @@ export default defineConfig({
   ],
   test: {
     globals: true,             // allows using describe, it, expect without importing them
-    environment: 'jsdom',      // simulates the browser
+    environment: 'happy-dom',      // simulates the browser
     setupFiles: './src/setupTests.ts', 
     css: true,
   },

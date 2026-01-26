@@ -41,8 +41,23 @@ export interface Roadmap {
   title: string;
   description?: string;
   status?: RoadmapStatus;
+  category?: RoadmapCategory;
   data: RoadmapData;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export enum RoadmapCategory {
+  FRONTEND = 'Frontend',
+  BACKEND = 'Backend',
+  DEVOPS = 'DevOps',
+  DATA_SCIENCE = 'Data Science',
+  MOBILE = 'Mobile Development',
+  FULLSTACK = 'Full Stack',
+  CYBERSECURITY = 'Cybersecurity',
+  AI = 'Artificial Intelligence',
+  GAME_DEV = 'Game Development',
+  CLOUD = 'Cloud Computing',
+  SECURITY = 'Security'
 }
 
