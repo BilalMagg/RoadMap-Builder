@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Layout from '../../components/layout/Layout';
 import { RoadmapApi } from '../../features/roadmap/services/roadmapApi';
+import { CreateRoadmapModal } from '../../components/roadmap/CreateRoadmapModal';
 import { Plus, Trash2, Edit2, Calendar, FileText } from 'lucide-react';
 import styles from './RoadmapList.module.css';
 
@@ -20,6 +21,7 @@ export default function RoadmapList() {
   const [roadmaps, setRoadmaps] = useState<RoadmapListItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -52,13 +54,12 @@ export default function RoadmapList() {
     }
   };
 
-  const handleCreateNew = async () => {
-    try {
-      const newRoadmap = await RoadmapApi.createRoadmap('New Roadmap', '');
-      navigate(`/canvas/${newRoadmap.id}`);
-    } catch (err: any) {
-      alert(err.message || 'Failed to create roadmap');
-    }
+  const handleCreateNew = () => {
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCreateSuccess = (roadmapId: string) => {
+    navigate(`/canvas/${roadmapId}`);
   };
 
   const handleSelectRoadmap = (id: string) => {
@@ -96,6 +97,12 @@ export default function RoadmapList() {
   return (
     <Layout>
       <div className={styles.container}>
+        <CreateRoadmapModal
+            isOpen={isCreateModalOpen}
+            onClose={() => setIsCreateModalOpen(false)}
+            onSuccess={handleCreateSuccess}
+        />
+
         {/* Background Decoration */}
         <div className={styles.bgDecoration}>
           <div className={styles.bgBlob1} />
