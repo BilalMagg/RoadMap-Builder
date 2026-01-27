@@ -1,5 +1,6 @@
 import { IDatabaseConfig } from './database.interface';
 import { PostgresConfig } from './postgres/postgres.config';
+import { PostgresProdConfig } from './postgres/postgres.prod.config';
 import { PostgresTestConfig } from './postgres/postgres.test.config';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -31,8 +32,8 @@ export class DatabaseFactory {
   static getProdConfiguration(): IDatabaseConfig {
     const dbType = process.env.DB_PROD_TYPE;
     switch (dbType) {
-      case 'mongo':
-        return new PostgresConfig();
+      case 'postgres':
+        return new PostgresProdConfig();
       default:
         throw new Error(
           `Database type "${dbType}" is not supported. Please check your .env file.`,

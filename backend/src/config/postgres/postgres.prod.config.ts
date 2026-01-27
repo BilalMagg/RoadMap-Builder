@@ -5,18 +5,24 @@ import { RefreshTokenEntity } from '../../models/refreshToken/refreshToken.entit
 import { RoadmapEntity } from '../../models/roadmap/roadmap.entity';
 import { RoadmapEventEntity } from '../../models/roadmap-event/roadmap-event.entity';
 import { RoadmapProgressEntity } from '../../models/roadmap_progress/roadmap_progress.entity';
-
+console.log('DB URL:', process.env.DATABASE_PROD_URL);
 export const prodDataSource = new DataSource({
   type: 'postgres',
-  host: process.env.HOST,
-  port: Number(process.env.DB_PROD_PORT),
-  username: process.env.DB_PROD_USER,
-  password: process.env.DB_PROD_PASSWORD,
-  database: process.env.DB_PROD_NAME,
-  synchronize: true,
-  dropSchema: true,
-  entities: [UserEntity, RefreshTokenEntity, RoadmapEntity, RoadmapEventEntity, RoadmapProgressEntity],
+  url: process.env.DATABASE_PROD_URL,
+  ssl: {
+    rejectUnauthorized: false
+  },
+  synchronize: false,
+  logging: true,
+  entities: [
+    UserEntity,
+    RefreshTokenEntity,
+    RoadmapEntity,
+    RoadmapEventEntity,
+    RoadmapProgressEntity
+  ],
 });
+
 
 export class PostgresProdConfig implements IDatabaseConfig {
   getDataSource = () => {
