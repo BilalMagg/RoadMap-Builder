@@ -26,7 +26,7 @@ export class RefreshTokenController {
 
       res.cookie('accessToken', accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.NODE_ENV === process.env.ENV_PROD,
         sameSite: 'none',
         maxAge: 10 * 1000,
         path: '/',
