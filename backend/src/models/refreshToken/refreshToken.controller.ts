@@ -18,16 +18,16 @@ export class RefreshTokenController {
 
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        secure: process.env.NODE_ENV === process.env.ENV_PROD,
+        sameSite: 'none',
         maxAge: 2 * 60 * 1000,
         path: '/',
       });
 
       res.cookie('accessToken', accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        secure: process.env.NODE_ENV === process.env.ENV_PROD,
+        sameSite: 'none',
         maxAge: 10 * 1000,
         path: '/',
       });
