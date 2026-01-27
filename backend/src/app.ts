@@ -6,7 +6,7 @@ import cookieParser from 'cookie-parser';
 import { AllRoutes } from './routes/index.route';
 dotenv.config();
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: ['http://localhost:5173','https://road-map-builder.vercel.app'],
   credentials: true,
 };
 
