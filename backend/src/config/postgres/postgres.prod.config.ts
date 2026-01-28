@@ -13,7 +13,7 @@ export const prodDataSource = new DataSource({
     rejectUnauthorized: false
   },
   synchronize: false,
-  logging: true,
+  logging: false,
   entities: [
     UserEntity,
     RefreshTokenEntity,

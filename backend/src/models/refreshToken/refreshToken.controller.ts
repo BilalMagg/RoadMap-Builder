@@ -1,11 +1,15 @@
 import { Request, Response } from 'express';
 import { RefreshTokenService } from './refreshToken.service';
-
+import dotenv from 'dotenv';
+dotenv.config();
+console.log(process.env.NODE_ENV === process.env.ENV_PROD)
 export class RefreshTokenController {
   constructor(private refreshTokenService: RefreshTokenService) {}
 
   async refresh(req: Request, res: Response) {
     console.log('Cookies reçus :', req.cookies);
+    console.log('Request origin:', req.headers.origin);
+    console.log('Request host:', req.headers.host);
     const incomingToken = req.cookies.refreshToken;
 
     if (!incomingToken) {
@@ -18,7 +22,7 @@ export class RefreshTokenController {
 
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === process.env.ENV_PROD,
+        secure: true,
         sameSite: 'none',
         maxAge: 2 * 60 * 1000,
         path: '/',
@@ -26,7 +30,7 @@ export class RefreshTokenController {
 
       res.cookie('accessToken', accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === process.env.ENV_PROD,
+        secure: true,
         sameSite: 'none',
         maxAge: 10 * 1000,
         path: '/',
