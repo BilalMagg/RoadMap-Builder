@@ -22,7 +22,7 @@ export const corsOptions = {
   },
   credentials: true, // This is required for cookies
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'Set-Cookie'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'Set-Cookie','ngrok-skip-browser-warning'],
   exposedHeaders: ['Set-Cookie', 'Authorization'],
   maxAge: 86400, // 24 hours
 };
