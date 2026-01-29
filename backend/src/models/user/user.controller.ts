@@ -2,6 +2,9 @@ import { UserService } from './user.service';
 import { Request, Response } from 'express';
 import { ApiResponse } from '../../utils/api/api.response';
 import { ValidationError } from 'class-validator';
+import dotenv from 'dotenv';
+dotenv.config();
+console.log("hamid token: ",process.env.ENV_PROD)
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -35,16 +38,22 @@ export class UserController {
         req.body,
       );
 
+      const isSecure =
+        process.env.NODE_ENV === process.env.ENV_PROD ||
+        req.headers?.origin?.includes('ngrok-free.app');
+
       res.cookie('accessToken', accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
+        secure: !!isSecure, // Use secure cookies if in production or ngrok
+        sameSite: isSecure ? 'none' : 'lax', // 'none' requires secure: true
         maxAge: 15 * 60 * 1000,
       });
 
       if (refreshToken != null) {
         res.cookie('refreshToken', refreshToken, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production',
+          secure: !!isSecure,
+          sameSite: isSecure ? 'none' : 'lax',
           maxAge: 7 * 24 * 60 * 60 * 1000,
         });
       }
