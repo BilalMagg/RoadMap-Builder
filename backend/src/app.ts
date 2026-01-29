@@ -24,8 +24,8 @@ app.use((req, res, next) => {
   console.log('=== Request Details ===');
   console.log('URL:', req.url);
   console.log('Method:', req.method);
-  console.log('Origin:', req.headers.origin);
-  console.log('Referer:', req.headers.referer);
+  console.log('Origin:', req.headers?.origin);
+  console.log('Referer:', req.headers?.referer);
   console.log('Host:', req.headers.host);
   console.log('Secure (req.secure):', req.secure);
   console.log('X-Forwarded-Proto:', req.headers['x-forwarded-proto']);

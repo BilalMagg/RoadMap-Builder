@@ -8,8 +8,8 @@ export class RefreshTokenController {
 
   async refresh(req: Request, res: Response) {
     console.log('Cookies reçus :', req.cookies);
-    console.log('Request origin:', req.headers.origin);
-    console.log('Request host:', req.headers.host);
+    console.log('Request origin:', req.headers?.origin);
+    console.log('Request host:', req.headers?.host);
     const incomingToken = req.cookies.refreshToken;
 
     if (!incomingToken) {
