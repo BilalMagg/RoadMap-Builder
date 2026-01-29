@@ -70,3 +70,4 @@ ALTER TABLE "roadmap_progress" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("
 ALTER TABLE "roadmap_progress" ADD FOREIGN KEY ("roadmap_id") REFERENCES "roadmaps" ("id");
 
 ALTER TABLE "node_library" ADD FOREIGN KEY ("owner_id") REFERENCES "users" ("id");
+
