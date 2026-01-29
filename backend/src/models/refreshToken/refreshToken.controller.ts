@@ -22,7 +22,7 @@ export class RefreshTokenController {
 
       res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === process.env.ENV_PROD,
         sameSite: 'none',
         maxAge: 2 * 60 * 1000,
         path: '/',
@@ -30,7 +30,7 @@ export class RefreshTokenController {
 
       res.cookie('accessToken', accessToken, {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === process.env.ENV_PROD,
         sameSite: 'none',
         maxAge: 10 * 1000,
         path: '/',
