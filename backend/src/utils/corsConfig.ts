@@ -6,7 +6,6 @@ export const corsOptions = {
 
     const allowedOrigins = [
       'http://localhost:5173', // Your local Vite dev server
-      'http://localhost:3000',
       'https://road-map-builder.vercel.app', // Your Vercel deployment
     ];
 
