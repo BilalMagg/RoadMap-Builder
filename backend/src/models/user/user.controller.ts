@@ -38,18 +38,22 @@ export class UserController {
         req.body,
       );
 
+      const isSecure =
+        process.env.NODE_ENV === process.env.ENV_PROD ||
+        req.headers.origin?.includes('ngrok-free.app');
+
       res.cookie('accessToken', accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === process.env.ENV_PROD, // Required for SameSite=None
-        sameSite: 'none', // Required for cross-site cookie
+        secure: !!isSecure, // Use secure cookies if in production or ngrok
+        sameSite: isSecure ? 'none' : 'lax', // 'none' requires secure: true
         maxAge: 15 * 60 * 1000,
       });
 
       if (refreshToken != null) {
         res.cookie('refreshToken', refreshToken, {
           httpOnly: true,
-          secure: process.env.NODE_ENV === process.env.ENV_PROD, // Required for SameSite=None
-          sameSite: 'none', // Required for cross-site cookie
+          secure: !!isSecure,
+          sameSite: isSecure ? 'none' : 'lax',
           maxAge: 7 * 24 * 60 * 60 * 1000,
         });
       }

@@ -13,7 +13,11 @@ import morgan from 'morgan';
 const app = express();
 app.set('trust proxy', true);
 
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  })
+);
 
 app.use(morgan('dev'));
 app.set('json spaces', 2);
