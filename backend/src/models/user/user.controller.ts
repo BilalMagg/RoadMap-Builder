@@ -2,6 +2,9 @@ import { UserService } from './user.service';
 import { Request, Response } from 'express';
 import { ApiResponse } from '../../utils/api/api.response';
 import { ValidationError } from 'class-validator';
+import dotenv from 'dotenv';
+dotenv.config();
+console.log("hamid token: ",process.env.ENV_PROD)
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -37,7 +40,7 @@ export class UserController {
 
       res.cookie('accessToken', accessToken, {
         httpOnly: true,
-        secure: true, // Required for SameSite=None
+        secure: process.env.NODE_ENV === process.env.ENV_PROD, // Required for SameSite=None
         sameSite: 'none', // Required for cross-site cookie
         maxAge: 15 * 60 * 1000,
       });
@@ -45,7 +48,7 @@ export class UserController {
       if (refreshToken != null) {
         res.cookie('refreshToken', refreshToken, {
           httpOnly: true,
-          secure: true, // Required for SameSite=None
+          secure: process.env.NODE_ENV === process.env.ENV_PROD, // Required for SameSite=None
           sameSite: 'none', // Required for cross-site cookie
           maxAge: 7 * 24 * 60 * 60 * 1000,
         });
