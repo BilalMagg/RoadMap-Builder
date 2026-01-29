@@ -40,7 +40,7 @@ export class UserController {
 
       const isSecure =
         process.env.NODE_ENV === process.env.ENV_PROD ||
-        req.headers.origin?.includes('ngrok-free.app');
+        req.headers?.origin?.includes('ngrok-free.app');
 
       res.cookie('accessToken', accessToken, {
         httpOnly: true,
